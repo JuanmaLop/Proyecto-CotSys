@@ -1,10 +1,9 @@
-package com.udeateampro.CotSys.service;
+package com.udeateampro.service;
 
-import com.udeateampro.CotSys.model.Producto;
-import com.udeateampro.CotSys.repository.ProductoRepository;
+import com.udeateampro.entity.Producto;
+import com.udeateampro.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,7 @@ public class ProductoService {
     }
 
     //Obtener producto por id
-    public Optional<Producto> getProductoById(String id) {
+    public Optional<Producto> getProductoById(Long id) {
         return productoRepository.findById(id);
     }
 
@@ -32,7 +31,7 @@ public class ProductoService {
     }
 
     //Actualizar producto
-    public Producto updateProducto(String id, Producto updatedProducto) {
+    public Producto updateProducto(Long id, Producto updatedProducto) {
         Optional<Producto> existingProducto = productoRepository.findById(id);
 
         if(existingProducto.isPresent()) {
@@ -47,12 +46,12 @@ public class ProductoService {
             producto.setTipo(updatedProducto.getTipo());
             producto.setEstado(updatedProducto.getEstado());
             return productoRepository.save(producto);
-        }else {
+        }else{
             throw new RuntimeException("No existe el producto con id:" + id);
         }
     }
 
-    public void deleteProducto(String id) {
+    public void deleteProducto(Long id) {
         if(!productoRepository.existsById(id)) {
             throw new RuntimeException("No existe el producto con id:" + id);
         }

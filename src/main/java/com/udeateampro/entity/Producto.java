@@ -1,17 +1,17 @@
-package com.udeateampro.CotSys.model;
+package com.udeateampro.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "producto")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Producto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
