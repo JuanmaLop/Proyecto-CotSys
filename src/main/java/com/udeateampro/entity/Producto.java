@@ -17,38 +17,37 @@ public class Producto {
     @Column(name = "id_producto")
     private Long id;
 
-    @Column(nullable = false, length = 60)
+    @Column(name = "nombre", nullable = false, length = 60)
     private String nombre;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
-    @Column(nullable = false, length = 60)
+    @Column(name = "categoria", nullable = false, length = 60)
     private String categoria;
 
-    // 🔹 OJO: aquí debe ir exactamente como está en la base
     @Column(name = "unidadmedida", nullable = false, length = 60)
     private String unidadMedida;
 
-    @Column(name = "costobase", nullable = false)
+    @Column(name = "costoBase", nullable = false)
     private Double costoBase;
 
-    @Column(name = "monedaoriginal", nullable = false, length = 20)
+    @Column(name = "monedaOriginal", nullable = false, length = 20)
     private String monedaOriginal;
 
-    @Column(nullable = false, length = 60)
+    @Column(name = "tipo", nullable = false, length = 60)
     private String tipo;
 
     @Column(name = "estado", nullable = false)
     private Boolean estado;
 
-    @Column(name = "cantidadkit", nullable = false)
+    @Column(name = "cantidadKit", nullable = false)
     private Integer cantidadKit;
 
-    @Column(name = "instruccioneskit", nullable = false, length = 255)
+    @Column(name = "instruccionesKit", nullable = false, length = 255)
     private String instruccionesKit;
 
-    @Column(name = "kitsolucion", nullable = false)
+    @Column(name = "kitSolucion", nullable = false)
     private Long kitSolucion;
 }
 

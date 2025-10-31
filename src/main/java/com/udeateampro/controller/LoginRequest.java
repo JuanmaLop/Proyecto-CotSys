@@ -1,8 +1,6 @@
 package com.udeateampro.controller;
 
-public record CreateUserRequest(
-        String nombre,
+public record LoginRequest(
         String email,
-        String rol,
         String password) {
 }

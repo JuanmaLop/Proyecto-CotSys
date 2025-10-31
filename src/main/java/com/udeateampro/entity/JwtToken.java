@@ -2,6 +2,7 @@ package com.udeateampro.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Token {
+@Table(name = "jwt_token")
+public class JwtToken {
 
     public enum TokenType {
         BEARER,
@@ -29,7 +31,7 @@ public class Token {
     @Column(name = "id_token")
     private Long id;
 
-    @Column(name = "token", nullable = false, unique = true)
+    @Column(name = "token", nullable = false, unique = true, length = 1000)
     private String token;
 
     @Enumerated(EnumType.STRING)

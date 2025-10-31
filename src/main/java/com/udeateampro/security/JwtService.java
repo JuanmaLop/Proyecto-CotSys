@@ -1,0 +1,48 @@
+package com.udeateampro.security;
+
+import org.springframework.stereotype.Service;
+import java.util.Date;
+import java.util.Map;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import com.udeateampro.entity.Usuario;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Service
+public class JwtService {
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
+
+    @Value("${app.jwtExpirationMs}")
+    private int jwtExpirationMs;
+
+    @Value("${app.jwtExpirationRefresh}")
+    private int jwtExpirationRefresh;
+
+    public String generateToken(final Usuario usuario) {
+        return buildToken(usuario, jwtExpirationMs);
+    }
+
+    public String generateRefreshToken(final Usuario usuario) {
+        return buildToken(usuario, jwtExpirationRefresh);
+    }
+
+    private String buildToken(final Usuario usuario, final long expiration) {
+        return Jwts.builder()
+                .id(usuario.getId().toString())
+                .claims(Map.of("rol", usuario.getRol(), "email", usuario.getEmail()))
+                .subject(usuario.getEmail())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey())
+                .compact();
+    }
+
+    private SecretKey getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+ 
+}
