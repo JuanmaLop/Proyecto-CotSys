@@ -48,6 +48,7 @@ public class SecurityConfig {
 						// Rutas públicas - Auth
 						.requestMatchers("/auth/**").permitAll()
 						// Todas las demás rutas requieren autenticación
+						.requestMatchers("/api/**").permitAll() // pruebas
 						.anyRequest().authenticated());
 		return http.build();
 	}
