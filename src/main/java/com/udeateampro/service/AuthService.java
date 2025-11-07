@@ -1,17 +1,20 @@
 package com.udeateampro.service;
 
+import java.util.List;
+
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.udeateampro.controller.CreateUserRequest;
 import com.udeateampro.controller.LoginRequest;
-import com.udeateampro.entity.Usuario;
 import com.udeateampro.entity.JwtToken;
+import com.udeateampro.entity.Usuario;
 import com.udeateampro.repository.JwtTokenRepository;
 import com.udeateampro.repository.UsuarioRepository;
 import com.udeateampro.security.JwtService;
 import com.udeateampro.security.TokenResponse;
-import java.util.List;
-import org.springframework.security.authentication.AuthenticationManager;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -74,5 +77,30 @@ public class AuthService {
             }
             tokenRepository.saveAll(validUserTokens);
         }
+    }
+
+    public TokenResponse refreshToken(final String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Bearer Invalido");
+        }
+
+        final String refreshToken = authHeader.substring(7);
+        final String usuarioEmail = jwtService.extractEmail(refreshToken);
+        
+        if (usuarioEmail == null) {
+            throw new IllegalArgumentException("Token inválido");
+        }
+
+        final Usuario usuario = usuarioRepository.findByEmail(usuarioEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        
+        if (!jwtService.isTokenValid(refreshToken, usuario)) {
+            throw new IllegalArgumentException("Refresh token inválido");
+        }
+
+        final String newAccessToken = jwtService.generateToken(usuario);
+        revokeAllUserTokens(usuario);
+        saveUserToken(usuario, newAccessToken);
+        return new TokenResponse(newAccessToken, refreshToken);
     }
 }

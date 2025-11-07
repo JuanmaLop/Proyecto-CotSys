@@ -1,13 +1,17 @@
 package com.udeateampro.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.udeateampro.security.TokenResponse;
-import com.udeateampro.service.AuthService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.udeateampro.security.TokenResponse;
+import com.udeateampro.service.AuthService;
+
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
@@ -28,5 +32,9 @@ public class AuthController {
         final TokenResponse token = authService.createUser(request);
         return ResponseEntity.ok(token);
     }
-    
+
+    @PostMapping("/refresh-token")
+    public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
+        return authService.refreshToken(authHeader);
+    }
 }
