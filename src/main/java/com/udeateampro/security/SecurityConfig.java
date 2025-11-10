@@ -40,7 +40,6 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UsuarioRepository usuarioRepository;
-    private final AuthenticationProvider authenticationProvider;
     private final JwtTokenRepository tokenRepository;
 
     /**
@@ -58,15 +57,15 @@ public class SecurityConfig {
                 // Rutas públicas - Swagger/OpenAPI
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/swagger-resources/**", "/webjars/**").permitAll()
-                // Rutas públicas - Auth
-                .requestMatchers("/auth/**")
-                .permitAll()
+                // Rutas públicas - Auth (solo login/register, NO logout)
+                .requestMatchers("/auth/login", "/auth/create-user", "/auth/refresh").permitAll()
+                // Logout requiere autenticación
+                .requestMatchers("/auth/logout").authenticated()
                 // Todas las demás rutas requieren autenticación
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout
                         -> logout.logoutUrl("/auth/logout")
