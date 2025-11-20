@@ -1,6 +1,11 @@
 package com.udeateampro.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "producto")
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,28 +32,20 @@ public class Producto {
     @Column(name = "categoria", nullable = false, length = 60)
     private String categoria;
 
-    @Column(name = "unidadmedida", nullable = false, length = 60)
+    @Column(name = "unidad_medida", nullable = false, length = 60)
     private String unidadMedida;
 
-    @Column(name = "costoBase", nullable = false)
+    @Column(name = "costo_base", nullable = false)
     private Double costoBase;
 
-    @Column(name = "monedaOriginal", nullable = false, length = 20)
+    @Column(name = "moneda_original", nullable = false, length = 20)
     private String monedaOriginal;
 
     @Column(name = "tipo", nullable = false, length = 60)
     private String tipo;
 
+    @Builder.Default
     @Column(name = "estado", nullable = false)
-    private Boolean estado;
-
-    @Column(name = "cantidadKit", nullable = false)
-    private Integer cantidadKit;
-
-    @Column(name = "instruccionesKit", nullable = false, length = 255)
-    private String instruccionesKit;
-
-    @Column(name = "kitSolucion", nullable = false)
-    private Long kitSolucion;
+    private Boolean estado = true;
 }
 

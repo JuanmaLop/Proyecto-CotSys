@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udeateampro.controller.dto.CreateUserRequest;
+import com.udeateampro.controller.dto.LoginRequest;
 import com.udeateampro.security.TokenResponse;
 import com.udeateampro.service.AuthService;
 
@@ -16,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
 

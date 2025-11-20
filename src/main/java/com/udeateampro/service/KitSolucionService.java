@@ -1,11 +1,13 @@
 package com.udeateampro.service;
 
-import com.udeateampro.entity.KitSolucion;
-import com.udeateampro.repository.KitSolucionRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
+
+import com.udeateampro.controller.dto.CreateKitSolucionRequest;
+import com.udeateampro.entity.KitSolucion;
+import com.udeateampro.repository.KitSolucionRepository;
 
 @Service
 public class KitSolucionService {
@@ -13,8 +15,12 @@ public class KitSolucionService {
     @Autowired
     private KitSolucionRepository kitSolucionRepository;
 
-    public KitSolucion createKit(KitSolucion kit) {
-        return kitSolucionRepository.save(kit);
+    public KitSolucion createKit(CreateKitSolucionRequest request) {
+        var kitSolucion = KitSolucion.builder()
+                .nombre(request.nombre())
+                .descripcion(request.descripcion())
+                .build();
+        return kitSolucionRepository.save(kitSolucion);
     }
 
     public List<KitSolucion> getAllKits() {

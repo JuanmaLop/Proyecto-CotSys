@@ -1,11 +1,14 @@
 package com.udeateampro.service;
 
-import com.udeateampro.entity.Producto;
-import com.udeateampro.repository.ProductoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.udeateampro.controller.dto.CreateProductRequest;
+import com.udeateampro.entity.Producto;
+import com.udeateampro.repository.ProductoRepository;
 
 @Service
 public class ProductoService {
@@ -24,10 +27,17 @@ public class ProductoService {
     }
 
     //crear producto
-    public Producto createProducto(Producto producto) {
-        //validaciones de búsqueda
-
-        return productoRepository.save(producto);
+    public Producto createProducto(CreateProductRequest request) {
+        var producto = Producto.builder()
+                .nombre(request.nombre())
+                .descripcion(request.descripcion())
+                .categoria(request.categoria())
+                .unidadMedida(request.unidadMedida())
+                .costoBase(request.costoBase())
+                .monedaOriginal(request.monedaOriginal())
+                .tipo(request.tipo())
+                .build();
+        return productoRepository.save(producto);    
     }
 
     //Actualizar producto

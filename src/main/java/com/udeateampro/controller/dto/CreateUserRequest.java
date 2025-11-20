@@ -1,4 +1,4 @@
-package com.udeateampro.controller;
+package com.udeateampro.controller.dto;
 
 public record CreateUserRequest(
         String nombre,

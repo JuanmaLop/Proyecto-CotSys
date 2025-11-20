@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/swagger-resources/**", "/webjars/**").permitAll()
                 // Rutas públicas - Auth (solo login/register, NO logout)
-                .requestMatchers("/auth/login", "/auth/create-user", "/auth/refresh").permitAll()
+                .requestMatchers("api/auth/login", "api/auth/create-user", "api/auth/refresh").permitAll()
                 // Logout requiere autenticación
                 .requestMatchers("/auth/logout").authenticated()
                 // Todas las demás rutas requieren autenticación

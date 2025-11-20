@@ -6,8 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.udeateampro.controller.CreateUserRequest;
-import com.udeateampro.controller.LoginRequest;
+import com.udeateampro.controller.dto.CreateUserRequest;
+import com.udeateampro.controller.dto.LoginRequest;
 import com.udeateampro.entity.JwtToken;
 import com.udeateampro.entity.Usuario;
 import com.udeateampro.repository.JwtTokenRepository;

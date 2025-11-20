@@ -11,28 +11,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+@Entity
+@Table(name = "componente_kit")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "kit_solucion")
-public class KitSolucion {
-
+@Builder
+public class ComponenteKit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_kit_solucion")
+    @Column(name = "id_componente_kit")
     private Long id;
 
-    @Column(name = "nombre", nullable = false, length = 80)
-    private String nombre;
+    @Column(name = "id_kit_solucion", nullable = false)
+    private Long kitSolucion;
 
-    @Column(name = "descripcion", nullable = false, length = 255)
-    private String descripcion;
+    @Column(name = "id_producto", nullable = false)
+    private Long producto;
+
+    @Column(name = "cantidad", nullable = false)
+    private Integer cantidad;
+
+    @Column(name = "instrucciones", nullable = false)
+    private String instrucciones;
 
     @Builder.Default
     @Column(name = "estado", nullable = false)
     private Boolean estado = true;
-
 }
