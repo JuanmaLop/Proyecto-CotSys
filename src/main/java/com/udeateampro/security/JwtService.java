@@ -1,13 +1,12 @@
 package com.udeateampro.security;
 
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.udeateampro.entity.Usuario;
 
@@ -47,7 +46,7 @@ public class JwtService {
     private String buildToken(final Usuario usuario, final long expiration) {
         return Jwts.builder()
                 .id(usuario.getId().toString())
-                .claims(Map.of("rol", usuario.getRol(), "email", usuario.getEmail()))
+                .claims(Map.of("rol", usuario.getRol(), "nombre", usuario.getNombre()))
                 .subject(usuario.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
