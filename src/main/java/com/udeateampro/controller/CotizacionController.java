@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class CotizacionController {
     @Autowired
     private CotizacionService cotizacionService;
 
+    @PreAuthorize("hasRole('COMERCIAL')")
     @PostMapping("/create-cotizacion")
     public ResponseEntity<Cotizacion> addCotizacion(@RequestBody Cotizacion cotizacion) {
         Cotizacion newCotizacion = cotizacionService.createCotizacion(cotizacion);
@@ -37,12 +39,14 @@ public class CotizacionController {
         return ResponseEntity.ok(cotizacionService.getAllCotizaciones());
     }
 
+    @PreAuthorize("hasRole('COMERCIAL')")
     @PutMapping("/{id}/update-cotizacion")
     public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody Cotizacion cotizacion) {
         Cotizacion updatedCotizacion = cotizacionService.updateCotizacion(id, cotizacion);
         return ResponseEntity.ok(updatedCotizacion);
     }
 
+    @PreAuthorize("hasRole('COMERCIAL')")
     @DeleteMapping(("/{id}/delete-cotizacion"))
     public ResponseEntity<Cotizacion> deleteCotizacion(@PathVariable Long id) {
         cotizacionService.deleteCotizacion(id);

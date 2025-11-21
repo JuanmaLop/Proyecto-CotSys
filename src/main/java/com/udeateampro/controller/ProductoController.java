@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class ProductoController {
     private ProductoService productoService;
 
     //Crear producto
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
     @PostMapping("/create-producto")
     public ResponseEntity<Producto> addProducto(@RequestBody final CreateProductRequest request) {
         Producto newProducto = productoService.createProducto(request);
@@ -41,6 +43,7 @@ public class ProductoController {
     }
 
     //Actualizar producto
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
     @PutMapping("/{id}/update-producto")
     public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
         Producto updatedProducto = productoService.updateProducto(id, producto);
@@ -48,6 +51,7 @@ public class ProductoController {
     }
 
     //Eliminar producto
+    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
     @DeleteMapping(("/{id}/delete-producto"))
     public ResponseEntity<Producto> deleteProducto(@PathVariable Long id) {
         productoService.deleteProducto(id);

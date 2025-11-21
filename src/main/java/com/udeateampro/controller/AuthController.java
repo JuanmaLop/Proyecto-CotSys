@@ -2,6 +2,7 @@ package com.udeateampro.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,7 +29,7 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    //Temporalmente publico para la creación de usuarios
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/create-user")
     public ResponseEntity<TokenResponse> createUser(@RequestBody final CreateUserRequest request) {
         final TokenResponse token = authService.createUser(request);
