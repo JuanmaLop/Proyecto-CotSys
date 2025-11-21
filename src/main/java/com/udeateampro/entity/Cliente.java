@@ -2,6 +2,7 @@ package com.udeateampro.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "cliente")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cliente {
@@ -30,10 +32,11 @@ public class Cliente {
     @Column(name = "\"tipoRegimen\"", nullable = false, length = 50)
     private String tipoRegimen;
 
-    @Column(nullable = false)
-    private Boolean autorrentenedor;
-
     @Column(nullable = false, length = 80)
     private String municipio;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean autorrentenedor = false;
 }
 
