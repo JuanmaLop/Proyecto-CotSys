@@ -3,7 +3,6 @@ package com.udeateampro.service;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,6 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public TokenResponse createUser(CreateUserRequest request) {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         var usuario = Usuario.builder()
                 .nombre(request.nombre())
                 .email(request.email())
