@@ -2,6 +2,7 @@ package com.udeateampro.controller;
 
 import java.util.List;
 
+import com.udeateampro.controller.dto.CreateCotizacionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,8 +30,8 @@ public class CotizacionController {
 
     @PreAuthorize("hasRole('COMERCIAL')")
     @PostMapping("/create-cotizacion")
-    public ResponseEntity<Cotizacion> addCotizacion(@RequestBody Cotizacion cotizacion) {
-        Cotizacion newCotizacion = cotizacionService.createCotizacion(cotizacion);
+    public ResponseEntity<Cotizacion> addCotizacion(@RequestBody final CreateCotizacionRequest request) {
+        Cotizacion newCotizacion = cotizacionService.createCotizacion(request);
         return ResponseEntity.ok(newCotizacion);
     }
 

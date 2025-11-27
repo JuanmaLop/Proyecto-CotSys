@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udeateampro.controller.dto.CreateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.service.ClienteService;
+
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -29,8 +31,8 @@ public class ClienteController {
     //Crear cliente
     @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
     @PostMapping("/create-cliente")
-    public ResponseEntity<Cliente> addProducto(@RequestBody Cliente cliente) {
-        Cliente newCliente = clienteService.createCliente(cliente);
+    public ResponseEntity<Cliente> addProducto(@RequestBody final CreateClienteRequest request) {
+        Cliente newCliente = clienteService.createCliente(request);
         return ResponseEntity.ok(newCliente);
     }
 

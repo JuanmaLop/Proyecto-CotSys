@@ -1,6 +1,8 @@
 package com.udeateampro.service;
 
+import com.udeateampro.controller.dto.CreateCotizacionRequest;
 import com.udeateampro.entity.Cotizacion;
+import com.udeateampro.entity.Producto;
 import com.udeateampro.repository.CotizacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,18 @@ public class CotizacionService {
         return cotizacionRepository.findById(id);
     }
 
-    public Cotizacion createCotizacion(Cotizacion cotizacion) {
+    //crear producto
+    public Cotizacion createCotizacion(CreateCotizacionRequest request) {
+
+        Cotizacion cotizacion = new Cotizacion();
+
+        cotizacion.setEstado(request.estado());
+        cotizacion.setFechaCreacion(request.fechaCreacion()); // típica lógica
+        cotizacion.setFechaValidez(request.fechaValidez());
+        cotizacion.setMargenGeneral(request.margenGeneral());
+        cotizacion.setMonedaCotizacion(request.monedaCotizacion());
+        cotizacion.setUsuario(request.usuario());
+        cotizacion.setCliente(request.cliente());
 
         return cotizacionRepository.save(cotizacion);
     }
