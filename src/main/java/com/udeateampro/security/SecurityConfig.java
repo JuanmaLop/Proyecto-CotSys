@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -64,7 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-resources/**", "/webjars/**").permitAll()
                 .requestMatchers("/api/auth/login", "/api/auth/refresh-token").permitAll()
                 // Logout requiere autenticación
-                .requestMatchers("/auth/logout").authenticated()
+                .requestMatchers("/api/auth/logout").authenticated()
                 // Todas las demás rutas requieren autenticación
                 .anyRequest().authenticated()
                 )
@@ -72,7 +73,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout
-                        -> logout.logoutUrl("/auth/logout")
+                        -> logout.logoutUrl("/api/auth/logout")
                         .addLogoutHandler((request, response, authentication) -> {
                             final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
                             logout(authHeader);
@@ -118,14 +119,15 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return username -> {
             final Usuario usuario = usuarioRepository.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            // Normalizar rol: eliminar espacios y pasar a mayúsculas
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
             String normalizedRole = usuario.getRol() != null ? usuario.getRol().trim().toUpperCase() : "";
-            // Asegurar prefijo ROLE_ requerido por Spring Security al usar hasRole(...)
             String roleAuthority = normalizedRole.startsWith("ROLE_") ? normalizedRole : "ROLE_" + normalizedRole;
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(roleAuthority));
-            return org.springframework.security.core.userdetails.User.builder().username(usuario.getEmail())
-                    .password(usuario.getPassword()).authorities(authorities).build();
+            return org.springframework.security.core.userdetails.User.builder()
+                    .username(usuario.getEmail())
+                    .password(usuario.getPassword())
+                    .authorities(authorities)
+                    .build();
         };
     }
 

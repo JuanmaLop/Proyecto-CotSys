@@ -4,12 +4,10 @@ package com.udeateampro.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.udeateampro.controller.dto.CreateClienteRequest;
-import com.udeateampro.controller.dto.CreateProductRequest;
-import com.udeateampro.entity.Producto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.udeateampro.controller.dto.CreateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.repository.ClienteRepository;
 
@@ -37,6 +35,7 @@ public class ClienteService {
                 .direccion(request.direccion())
                 .tipoRegimen(request.tipoRegimen())
                 .municipio(request.municipio())
+                .autorrentenedor(request.autorrentenedor())
                 .build();
         return clienteRepository.save(cliente);
     }
