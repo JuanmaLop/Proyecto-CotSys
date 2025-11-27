@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class KitSolucionController {
     @Autowired
     private KitSolucionService kitSolucionService;
 
+    @PreAuthorize("hasRole('TÉCNICO')")
     @PostMapping("/create-kit")
     public ResponseEntity<KitSolucion> addKit(@RequestBody CreateKitSolucionRequest request) {
         return ResponseEntity.ok(kitSolucionService.createKit(request));
@@ -37,11 +39,13 @@ public class KitSolucionController {
         return ResponseEntity.ok(kitSolucionService.getAllKits());
     }
 
+    @PreAuthorize("hasRole('TÉCNICO')")
     @PutMapping("/{id}/update-kit")
     public ResponseEntity<KitSolucion> updateKit(@PathVariable Long id, @RequestBody KitSolucion kit) {
         return ResponseEntity.ok(kitSolucionService.updateKit(id, kit));
     }
 
+    @PreAuthorize("hasRole('TÉCNICO')")
     @DeleteMapping("/{id}/delete-kit")
     public ResponseEntity<Void> deleteKit(@PathVariable Long id) {
         kitSolucionService.deleteKit(id);

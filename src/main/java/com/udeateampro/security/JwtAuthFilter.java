@@ -41,7 +41,9 @@ public class JwtAuthFilter extends OncePerRequestFilter{
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException  {
         
-                if (request.getServletPath().contains("/auth")) {
+                // Saltar el filtro solo para rutas públicas específicas
+                final String path = request.getServletPath();
+                if (path.equals("/api/auth/login") || path.equals("/api/auth/refresh-token")) {
                     filterChain.doFilter(request, response);
                     return;
                 }
@@ -55,6 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
                 final String jwtToken = authHeader.substring(7);
                 final String usuarioEmail = jwtService.extractEmail(jwtToken);
                 if (usuarioEmail == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+                    filterChain.doFilter(request, response);
                     return;
                 }
 
@@ -74,6 +77,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
                 final boolean isTokenValid = jwtService.isTokenValid(jwtToken, usuario.get());
                 if (!isTokenValid){
+                    filterChain.doFilter(request, response);
                     return;
                 }
 
