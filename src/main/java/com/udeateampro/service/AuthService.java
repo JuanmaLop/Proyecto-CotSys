@@ -20,11 +20,26 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UsuarioRepository usuarioRepository;
     private final JwtTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    public TokenResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        request.email(),
+                        request.password()));
+        var usuario = usuarioRepository.findByEmail(request.email())
+                .orElseThrow();
+        var jwtToken = jwtService.generateToken(usuario);
+        var refreshToken = jwtService.generateRefreshToken(usuario);
+        revokeAllUserTokens(usuario);
+        saveUserToken(usuario, jwtToken);
+        return new TokenResponse(jwtToken, refreshToken);
+    }
 
     public TokenResponse createUser(CreateUserRequest request) {
         var usuario = Usuario.builder()
@@ -40,35 +55,21 @@ public class AuthService {
         return new TokenResponse(jwtToken, refreshToken);
     }
 
-    public TokenResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()));
-        var usuario = usuarioRepository.findByEmail(request.email())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(usuario);
-        var refreshToken = jwtService.generateRefreshToken(usuario);
-        revokeAllUserTokens(usuario);
-        saveUserToken(usuario, jwtToken);
-        return new TokenResponse(jwtToken, refreshToken);
-    }
-    
     public void saveUserToken(Usuario usuario, String jwtToken) {
         var token = JwtToken.builder()
-        .token(jwtToken)
-        .tipoToken(JwtToken.TokenType.BEARER)
-        .usuario(usuario.getId())
-        .expirado(false)
-        .revocado(false)
-        .build();
+                .token(jwtToken)
+                .tipoToken(JwtToken.TokenType.BEARER)
+                .usuario(usuario.getId())
+                .expirado(false)
+                .revocado(false)
+                .build();
         tokenRepository.save(token);
     }
 
     public void revokeAllUserTokens(Usuario usuario) {
         final List<JwtToken> validUserTokens = tokenRepository.findAll().stream()
                 .filter(token -> token.getUsuario().equals(usuario.getId()) && !token.isExpirado()
-                        && !token.isRevocado())
+                && !token.isRevocado())
                 .toList();
         if (!validUserTokens.isEmpty()) {
             for (final JwtToken token : validUserTokens) {
@@ -86,14 +87,14 @@ public class AuthService {
 
         final String refreshToken = authHeader.substring(7);
         final String usuarioEmail = jwtService.extractEmail(refreshToken);
-        
+
         if (usuarioEmail == null) {
             throw new IllegalArgumentException("Token inválido");
         }
 
         final Usuario usuario = usuarioRepository.findByEmail(usuarioEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-        
+
         if (!jwtService.isTokenValid(refreshToken, usuario)) {
             throw new IllegalArgumentException("Refresh token inválido");
         }

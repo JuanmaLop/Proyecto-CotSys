@@ -16,11 +16,11 @@ import com.udeateampro.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("/login")
