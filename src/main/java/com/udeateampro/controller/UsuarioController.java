@@ -29,7 +29,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.getAllUsuarios());
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/update-user")
     public ResponseEntity<List<UsuarioResponse>> updateUser(@RequestBody final List<UpdateUserRequest> listUsuario) {
         final List<UsuarioResponse> updatedUser = usuarioService.updateUser(listUsuario);
