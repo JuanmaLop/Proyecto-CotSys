@@ -28,30 +28,31 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    //Crear cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
+    //Crear cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/create-cliente")
     public ResponseEntity<Cliente> addProducto(@RequestBody final CreateClienteRequest request) {
         Cliente newCliente = clienteService.createCliente(request);
         return ResponseEntity.ok(newCliente);
     }
 
-    //Obtener clientes
+    //Obtener clientes (admin o comercial para consulta)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @GetMapping("/get-all-clientes")
     public ResponseEntity<List<Cliente>> getAllClientes() {
         return ResponseEntity.ok(clienteService.getAllClientes());
     }
 
-    //Actualizar cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
+    //Actualizar cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}/update-cliente")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         Cliente updatedCliente = clienteService.updateCliente(id, cliente);
         return ResponseEntity.ok(updatedCliente);
     }
 
-    //Eliminar cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
+    //Eliminar cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping(("/{id}/delete-cliente"))
     public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id) {
         clienteService.deleteCliente(id);

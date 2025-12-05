@@ -28,24 +28,25 @@ public class KitSolucionController {
     @Autowired
     private KitSolucionService kitSolucionService;
 
-    @PreAuthorize("hasRole('TÉCNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PostMapping("/create-kit")
     public ResponseEntity<KitSolucion> addKit(@RequestBody CreateKitSolucionRequest request) {
         return ResponseEntity.ok(kitSolucionService.createKit(request));
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @GetMapping("/get-all-kits")
     public ResponseEntity<List<KitSolucion>> getAllKits() {
         return ResponseEntity.ok(kitSolucionService.getAllKits());
     }
 
-    @PreAuthorize("hasRole('TÉCNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PutMapping("/{id}/update-kit")
     public ResponseEntity<KitSolucion> updateKit(@PathVariable Long id, @RequestBody KitSolucion kit) {
         return ResponseEntity.ok(kitSolucionService.updateKit(id, kit));
     }
 
-    @PreAuthorize("hasRole('TÉCNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @DeleteMapping("/{id}/delete-kit")
     public ResponseEntity<Void> deleteKit(@PathVariable Long id) {
         kitSolucionService.deleteKit(id);

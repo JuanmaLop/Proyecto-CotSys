@@ -21,7 +21,7 @@ public class ComponenteKitController {
     @Autowired
     private ComponenteKitService componenteKitService;
 
-    @PreAuthorize("hasRole('TÉCNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PostMapping("/create-componente-kit")
     public ResponseEntity<ComponenteKit> addComponenteKit(@RequestBody final CreateComponenteKitRequest request) {
         ComponenteKit newComponenteKit = componenteKitService.createComponenteKit(request);
