@@ -47,4 +47,8 @@ public class ComponenteKitService {
                 .build();
         return componenteKitRepository.save(componenteKit);
     }
+
+    public List<ComponenteKit> getComponentesByKitSolucion(Long kitSolucion) {
+        return componenteKitRepository.findByKitSolucion(kitSolucion);
+    }
 }
