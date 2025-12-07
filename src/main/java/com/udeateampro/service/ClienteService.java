@@ -23,8 +23,8 @@ public class ClienteService {
     }
 
     //Obtener cliente por id
-    public Optional<Cliente> getClienteById(Long id) {
-        return clienteRepository.findById(id);
+    public Optional<Cliente> getClienteById(Long id_cliente) {
+        return clienteRepository.findById(id_cliente);
     }
 
     //crear cliente
@@ -41,8 +41,8 @@ public class ClienteService {
     }
 
     //Actualizar cliente
-    public Cliente updateCliente(Long id, Cliente updatedCliente) {
-        Optional<Cliente> existingCliente = clienteRepository.findById(id);
+    public Cliente updateCliente(Long id_cliente, Cliente updatedCliente) {
+        Optional<Cliente> existingCliente = clienteRepository.findById(id_cliente);
 
         if(existingCliente.isPresent()) {
             Cliente cliente = existingCliente.get();
@@ -53,14 +53,14 @@ public class ClienteService {
             cliente.setMunicipio(updatedCliente.getMunicipio());
             return clienteRepository.save(cliente);
         }else{
-            throw new RuntimeException("No existe el cliente con id:" + id);
+            throw new RuntimeException("No existe el cliente con id:" + id_cliente);
         }
     }
 
-    public void deleteCliente(Long id) {
-        if(!clienteRepository.existsById(id)) {
-            throw new RuntimeException("No existe el cliente con id:" + id);
+    public void deleteCliente(Long id_cliente) {
+        if(!clienteRepository.existsById(id_cliente)) {
+            throw new RuntimeException("No existe el cliente con id:" + id_cliente);
         }
-        clienteRepository.deleteById(id);
+        clienteRepository.deleteById(id_cliente);
     }
 }

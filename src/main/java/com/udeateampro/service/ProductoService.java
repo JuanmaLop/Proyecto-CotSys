@@ -41,8 +41,8 @@ public class ProductoService {
     }
 
     //Actualizar producto
-    public Producto updateProducto(Long id, Producto updatedProducto) {
-        Optional<Producto> existingProducto = productoRepository.findById(id);
+    public Producto updateProducto(Long id_producto, Producto updatedProducto) {
+        Optional<Producto> existingProducto = productoRepository.findById(id_producto);
 
         if(existingProducto.isPresent()) {
             Producto producto = existingProducto.get();
@@ -57,14 +57,14 @@ public class ProductoService {
             producto.setEstado(updatedProducto.getEstado());
             return productoRepository.save(producto);
         }else{
-            throw new RuntimeException("No existe el producto con id:" + id);
+            throw new RuntimeException("No existe el producto con id:" + id_producto);
         }
     }
 
-    public void deleteProducto(Long id) {
-        if(!productoRepository.existsById(id)) {
-            throw new RuntimeException("No existe el producto con id:" + id);
+    public void deleteProducto(Long id_producto) {
+        if(!productoRepository.existsById(id_producto)) {
+            throw new RuntimeException("No existe el producto con id:" + id_producto);
         }
-        productoRepository.deleteById(id);
+        productoRepository.deleteById(id_producto);
     }
 }

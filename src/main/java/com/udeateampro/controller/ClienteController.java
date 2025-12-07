@@ -45,17 +45,17 @@ public class ClienteController {
 
     //Actualizar cliente (solo administrador)
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PutMapping("/{id}/update-cliente")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        Cliente updatedCliente = clienteService.updateCliente(id, cliente);
+    @PutMapping("/{id_cliente}/update-cliente")
+    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id_cliente, @RequestBody Cliente cliente) {
+        Cliente updatedCliente = clienteService.updateCliente(id_cliente, cliente);
         return ResponseEntity.ok(updatedCliente);
     }
 
     //Eliminar cliente (solo administrador)
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @DeleteMapping(("/{id}/delete-cliente"))
-    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id) {
-        clienteService.deleteCliente(id);
+    @DeleteMapping(("/{id_cliente}/delete-cliente"))
+    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id_cliente) {
+        clienteService.deleteCliente(id_cliente);
         return ResponseEntity.noContent().build();
     }
 
