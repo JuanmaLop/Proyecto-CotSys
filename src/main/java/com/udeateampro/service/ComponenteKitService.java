@@ -20,22 +20,8 @@ public class ComponenteKitService {
         return componenteKitRepository.findAll();
     }
 
-    public Optional<ComponenteKit> getComponenteKitById(Long id) {
-        return componenteKitRepository.findById(id);
-    }
-
-    public ComponenteKit updateComponenteKit(Long id, ComponenteKit updatedComponenteKit) {
-        Optional<ComponenteKit> existingComponenteKit = componenteKitRepository.findById(id);
-
-        if (existingComponenteKit.isPresent()) {
-            ComponenteKit componenteKit = existingComponenteKit.get();
-            componenteKit.setCantidad(updatedComponenteKit.getCantidad());
-            componenteKit.setInstrucciones(updatedComponenteKit.getInstrucciones());
-            componenteKit.setEstado(updatedComponenteKit.getEstado());
-            return componenteKitRepository.save(componenteKit);
-        } else {
-            throw new RuntimeException("No existe el componente kit con id:" + id);
-        }
+    public Optional<ComponenteKit> getComponenteKitById(Long id_componente_kit) {
+        return componenteKitRepository.findById(id_componente_kit);
     }
 
     public ComponenteKit createComponenteKit(CreateComponenteKitRequest request) {
@@ -45,6 +31,25 @@ public class ComponenteKitService {
                 .cantidad(request.cantidad())
                 .instrucciones(request.instrucciones())
                 .build();
+
         return componenteKitRepository.save(componenteKit);
+    }
+
+    public ComponenteKit updateComponenteKit(Long id_componente_kit, ComponenteKit updated) {
+        ComponenteKit existing = componenteKitRepository.findById(id_componente_kit)
+                .orElseThrow(() -> new RuntimeException("Componente kit no encontrado"));
+
+        existing.setCantidad(updated.getCantidad());
+        existing.setInstrucciones(updated.getInstrucciones());
+        existing.setEstado(updated.getEstado());
+
+        return componenteKitRepository.save(existing);
+    }
+
+    public void deleteComponenteKit(Long id_componente_kit) {
+        if (!componenteKitRepository.existsById(id_componente_kit)) {
+            throw new RuntimeException("No existe el componente kit con id: " + id_componente_kit);
+        }
+        componenteKitRepository.deleteById(id_componente_kit);
     }
 }

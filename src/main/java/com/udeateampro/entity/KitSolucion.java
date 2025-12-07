@@ -23,7 +23,7 @@ public class KitSolucion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_kit_solucion")
-    private Long id;
+    private Long id_kit;
 
     @Column(name = "nombre", nullable = false, length = 80)
     private String nombre;

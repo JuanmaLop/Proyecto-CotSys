@@ -45,17 +45,17 @@ public class ProductoController {
 
     //Actualizar producto (admin o líder técnico)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @PutMapping("/{id}/update-producto")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        Producto updatedProducto = productoService.updateProducto(id, producto);
+    @PutMapping("/{id_producto}/update-producto")
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long id_producto, @RequestBody Producto producto) {
+        Producto updatedProducto = productoService.updateProducto(id_producto, producto);
         return ResponseEntity.ok(updatedProducto);
     }
 
     //Eliminar producto (admin o líder técnico)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @DeleteMapping(("/{id}/delete-producto"))
-    public ResponseEntity<Producto> deleteProducto(@PathVariable Long id) {
-        productoService.deleteProducto(id);
+    @DeleteMapping(("/{id_producto}/delete-producto"))
+    public ResponseEntity<Producto> deleteProducto(@PathVariable Long id_producto) {
+        productoService.deleteProducto(id_producto);
         return ResponseEntity.noContent().build();
     }
 
