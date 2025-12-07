@@ -2,16 +2,19 @@ package com.udeateampro.controller.dto;
 
 import java.util.List;
 
-public record CreateKitSolucionRequest(
+public record KitSolucionResponse(
+        Long id_kit,
         String nombre,
         String descripcion,
         Boolean estado,
-        List<ComponenteKitDTO> componentes) {
+        List<ComponenteKitResponse> componentes) {
     
-    public record ComponenteKitDTO(
+    public record ComponenteKitResponse(
+            Long id_componente_kit,
             Long id_producto,
             Integer cantidad,
             String instrucciones,
             Boolean estado) {
     }
 }
+

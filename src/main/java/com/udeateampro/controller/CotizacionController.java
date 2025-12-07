@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udeateampro.controller.dto.CreateCotizacionCompleteRequest;
 import com.udeateampro.entity.Cotizacion;
+import com.udeateampro.entity.Impuesto;
+import com.udeateampro.entity.ItemCotizacion;
 import com.udeateampro.service.CotizacionService;
 
 @RestController
@@ -27,30 +30,43 @@ public class CotizacionController {
     @Autowired
     private CotizacionService cotizacionService;
 
-    @PreAuthorize("hasRole('COMERCIAL')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @PostMapping("/create-cotizacion")
-    public ResponseEntity<Cotizacion> addCotizacion(@RequestBody Cotizacion cotizacion) {
-        Cotizacion newCotizacion = cotizacionService.createCotizacion(cotizacion);
+    public ResponseEntity<Cotizacion> addCotizacion(@RequestBody final CreateCotizacionCompleteRequest request) {
+        Cotizacion newCotizacion = cotizacionService.createCotizacionWithItems(request.cotizacion(), request.items());
         return ResponseEntity.ok(newCotizacion);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @GetMapping("/get-all-cotizaciones")
     public ResponseEntity<List<Cotizacion>> getAllCotizaciones() {
         return ResponseEntity.ok(cotizacionService.getAllCotizaciones());
     }
 
-    @PreAuthorize("hasRole('COMERCIAL')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @PutMapping("/{id}/update-cotizacion")
     public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody Cotizacion cotizacion) {
         Cotizacion updatedCotizacion = cotizacionService.updateCotizacion(id, cotizacion);
         return ResponseEntity.ok(updatedCotizacion);
     }
 
-    @PreAuthorize("hasRole('COMERCIAL')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @DeleteMapping(("/{id}/delete-cotizacion"))
     public ResponseEntity<Cotizacion> deleteCotizacion(@PathVariable Long id) {
         cotizacionService.deleteCotizacion(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
+    @GetMapping("/{id}/items")
+    public ResponseEntity<List<ItemCotizacion>> getItemsCotizacion(@PathVariable Long id) {
+        return ResponseEntity.ok(cotizacionService.getItemsByCotizacion(id));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
+    @GetMapping("/{id}/impuestos")
+    public ResponseEntity<List<Impuesto>> getImpuestosCotizacion(@PathVariable Long id) {
+        return ResponseEntity.ok(cotizacionService.getImpuestosByCotizacion(id));
     }
 
 }

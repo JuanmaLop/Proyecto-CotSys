@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udeateampro.controller.dto.CreateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.service.ClienteService;
+
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -26,33 +28,34 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    //Crear cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
+    //Crear cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/create-cliente")
-    public ResponseEntity<Cliente> addProducto(@RequestBody Cliente cliente) {
-        Cliente newCliente = clienteService.createCliente(cliente);
+    public ResponseEntity<Cliente> addProducto(@RequestBody final CreateClienteRequest request) {
+        Cliente newCliente = clienteService.createCliente(request);
         return ResponseEntity.ok(newCliente);
     }
 
-    //Obtener clientes
+    //Obtener clientes (admin o comercial para consulta)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @GetMapping("/get-all-clientes")
     public ResponseEntity<List<Cliente>> getAllClientes() {
         return ResponseEntity.ok(clienteService.getAllClientes());
     }
 
-    //Actualizar cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
-    @PutMapping("/{id}/update-cliente")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        Cliente updatedCliente = clienteService.updateCliente(id, cliente);
+    //Actualizar cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PutMapping("/{id_cliente}/update-cliente")
+    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id_cliente, @RequestBody Cliente cliente) {
+        Cliente updatedCliente = clienteService.updateCliente(id_cliente, cliente);
         return ResponseEntity.ok(updatedCliente);
     }
 
-    //Eliminar cliente
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('COMERCIAL')")
-    @DeleteMapping(("/{id}/delete-cliente"))
-    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id) {
-        clienteService.deleteCliente(id);
+    //Eliminar cliente (solo administrador)
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @DeleteMapping(("/{id_cliente}/delete-cliente"))
+    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id_cliente) {
+        clienteService.deleteCliente(id_cliente);
         return ResponseEntity.noContent().build();
     }
 

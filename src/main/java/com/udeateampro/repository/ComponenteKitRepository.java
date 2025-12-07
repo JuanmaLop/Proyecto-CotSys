@@ -10,4 +10,6 @@ import com.udeateampro.entity.ComponenteKit;
 @Repository
 public interface ComponenteKitRepository extends JpaRepository<ComponenteKit, Long>  {
     List<ComponenteKit> findByKitSolucion(Long kitSolucion);
+    
+    void deleteByKitSolucion(Long kitSolucion);
 }

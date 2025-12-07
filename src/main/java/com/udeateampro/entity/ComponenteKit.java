@@ -21,7 +21,7 @@ public class ComponenteKit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_componente_kit")
-    private Long id;
+    private Long id_componente_kit;
 
     @Column(name = "id_kit_solucion", nullable = false)
     private Long kitSolucion;

@@ -28,33 +28,34 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    //Crear producto
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
+    //Crear producto (admin o líder técnico)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PostMapping("/create-producto")
     public ResponseEntity<Producto> addProducto(@RequestBody final CreateProductRequest request) {
         Producto newProducto = productoService.createProducto(request);
         return ResponseEntity.ok(newProducto);
     }
 
-    //Obtener productos
+    //Obtener productos (admin o líder técnico)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @GetMapping("/get-all-productos")
     public ResponseEntity<List<Producto>> getAllProductos() {
         return ResponseEntity.ok(productoService.getAllProductos());
     }
 
-    //Actualizar producto
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
-    @PutMapping("/{id}/update-producto")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        Producto updatedProducto = productoService.updateProducto(id, producto);
+    //Actualizar producto (admin o líder técnico)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @PutMapping("/{id_producto}/update-producto")
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long id_producto, @RequestBody Producto producto) {
+        Producto updatedProducto = productoService.updateProducto(id_producto, producto);
         return ResponseEntity.ok(updatedProducto);
     }
 
-    //Eliminar producto
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('TÉCNICO')")
-    @DeleteMapping(("/{id}/delete-producto"))
-    public ResponseEntity<Producto> deleteProducto(@PathVariable Long id) {
-        productoService.deleteProducto(id);
+    //Eliminar producto (admin o líder técnico)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @DeleteMapping(("/{id_producto}/delete-producto"))
+    public ResponseEntity<Producto> deleteProducto(@PathVariable Long id_producto) {
+        productoService.deleteProducto(id_producto);
         return ResponseEntity.noContent().build();
     }
 

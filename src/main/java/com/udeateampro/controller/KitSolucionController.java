@@ -1,6 +1,7 @@
 package com.udeateampro.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udeateampro.controller.dto.CreateKitSolucionRequest;
+import com.udeateampro.controller.dto.KitSolucionResponse;
 import com.udeateampro.entity.KitSolucion;
+import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.service.KitSolucionService;
 
 @RestController
@@ -28,28 +31,54 @@ public class KitSolucionController {
     @Autowired
     private KitSolucionService kitSolucionService;
 
-    @PreAuthorize("hasRole('TÉCNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PostMapping("/create-kit")
-    public ResponseEntity<KitSolucion> addKit(@RequestBody CreateKitSolucionRequest request) {
-        return ResponseEntity.ok(kitSolucionService.createKit(request));
+    public ResponseEntity<KitSolucionResponse> addKit(@RequestBody CreateKitSolucionRequest request) {
+        KitSolucion kit = kitSolucionService.createKit(request);
+        return ResponseEntity.ok(toResponse(kit));
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @GetMapping("/get-all-kits")
-    public ResponseEntity<List<KitSolucion>> getAllKits() {
-        return ResponseEntity.ok(kitSolucionService.getAllKits());
+    public ResponseEntity<List<KitSolucionResponse>> getAllKits() {
+        List<KitSolucion> kits = kitSolucionService.getAllKits();
+        List<KitSolucionResponse> response = kits.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('TÉCNICO')")
-    @PutMapping("/{id}/update-kit")
-    public ResponseEntity<KitSolucion> updateKit(@PathVariable Long id, @RequestBody KitSolucion kit) {
-        return ResponseEntity.ok(kitSolucionService.updateKit(id, kit));
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @PutMapping("/{id_kit}/update-kit")
+    public ResponseEntity<KitSolucionResponse> updateKit(@PathVariable Long id_kit, @RequestBody CreateKitSolucionRequest request) {
+        KitSolucion kit = kitSolucionService.updateKit(id_kit, request);
+        return ResponseEntity.ok(toResponse(kit));
     }
 
-    @PreAuthorize("hasRole('TÉCNICO')")
-    @DeleteMapping("/{id}/delete-kit")
-    public ResponseEntity<Void> deleteKit(@PathVariable Long id) {
-        kitSolucionService.deleteKit(id);
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @DeleteMapping("/{id_kit}/delete-kit")
+    public ResponseEntity<Void> deleteKit(@PathVariable Long id_kit) {
+        kitSolucionService.deleteKit(id_kit);
         return ResponseEntity.noContent().build();
+    }
+    
+    private KitSolucionResponse toResponse(KitSolucion kit) {
+        List<ComponenteKit> componentes = kitSolucionService.getComponentesByKit(kit.getId_kit());
+        List<KitSolucionResponse.ComponenteKitResponse> componentesResponse = componentes.stream()
+                .map(c -> new KitSolucionResponse.ComponenteKitResponse(
+                        c.getId_componente_kit(),
+                        c.getProducto(),
+                        c.getCantidad(),
+                        c.getInstrucciones(),
+                        c.getEstado()))
+                .collect(Collectors.toList());
+        
+        return new KitSolucionResponse(
+                kit.getId_kit(),
+                kit.getNombre(),
+                kit.getDescripcion(),
+                kit.getEstado(),
+                componentesResponse);
     }
 }
 
