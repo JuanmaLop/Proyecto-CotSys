@@ -21,6 +21,10 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public Producto getProductoByIdProducto(Long id) {
+        return productoRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe el producto con id:" + id));
+    }
+
     //Obtener producto por id
     public Optional<Producto> getProductoById(Long id) {
         return productoRepository.findById(id);

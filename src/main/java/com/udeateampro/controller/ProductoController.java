@@ -1,6 +1,7 @@
 package com.udeateampro.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udeateampro.controller.dto.CreateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.service.ProductoService;
+
 
 @RestController
 @RequestMapping("/api/productos")
@@ -36,11 +39,23 @@ public class ProductoController {
         return ResponseEntity.ok(newProducto);
     }
 
+    @GetMapping("/get-product")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+
     //Obtener productos (admin o líder técnico)
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO', 'COMERCIAL')")
     @GetMapping("/get-all-productos")
     public ResponseEntity<List<Producto>> getAllProductos() {
         return ResponseEntity.ok(productoService.getAllProductos());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO', 'COMERCIAL')")
+    @GetMapping("/{id}/get-producto-by-id")
+    public ResponseEntity<Optional<Producto>> getProductoById(@PathVariable Long id) {
+        Optional<Producto> producto = productoService.getProductoById(id);
+        return ResponseEntity.ok(producto);
     }
 
     //Actualizar producto (admin o líder técnico)

@@ -52,4 +52,8 @@ public class ComponenteKitService {
         }
         componenteKitRepository.deleteById(id_componente_kit);
     }
+
+    public List<ComponenteKit> getComponentesByKitSolucion(Long kitSolucion) {
+        return componenteKitRepository.findByKitSolucion(kitSolucion);
+    }
 }

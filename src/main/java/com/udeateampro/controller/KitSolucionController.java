@@ -38,7 +38,7 @@ public class KitSolucionController {
         return ResponseEntity.ok(toResponse(kit));
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO', 'COMERCIAL')")
     @GetMapping("/get-all-kits")
     public ResponseEntity<List<KitSolucionResponse>> getAllKits() {
         List<KitSolucion> kits = kitSolucionService.getAllKits();

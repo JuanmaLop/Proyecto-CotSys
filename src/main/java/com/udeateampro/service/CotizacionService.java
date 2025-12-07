@@ -69,23 +69,23 @@ public class CotizacionService {
 
         // IVA (19%)
         Impuesto iva = Impuesto.builder()
-                .tipo("IVA")
-                .descripcion("Impuesto al Valor Agregado")
-                .porcentaje(new BigDecimal("19.00"))
+            .tipo("IVA")
+            .descripcion("Impuesto al Valor Agregado")
+            .porcentaje(new BigDecimal("19.00"))
+            .estado(true)
+            .cotizacion(savedCotizacion.getId())
+            .build();
+        impuestoRepository.save(iva);
+
+        // Retención en la fuente (10%) solo si es autorrentenedor
+        if (Boolean.TRUE.equals(cliente.getAutorrentenedor())) {
+            Impuesto retencion = Impuesto.builder()
+                .tipo("RETEFUENTE")
+                .descripcion("Retención en la fuente")
+                .porcentaje(new BigDecimal("10.00"))
                 .estado(true)
                 .cotizacion(savedCotizacion.getId())
                 .build();
-        impuestoRepository.save(iva);
-
-        // Retención en la fuente (4%) solo si es autorrentenedor
-        if (Boolean.TRUE.equals(cliente.getAutorrentenedor())) {
-            Impuesto retencion = Impuesto.builder()
-                    .tipo("RETEFUENTE")
-                    .descripcion("Retención en la fuente")
-                    .porcentaje(new BigDecimal("4.00"))
-                    .estado(true)
-                    .cotizacion(savedCotizacion.getId())
-                    .build();
             impuestoRepository.save(retencion);
         }
 

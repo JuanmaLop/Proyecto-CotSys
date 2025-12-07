@@ -1,5 +1,7 @@
 package com.udeateampro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +34,7 @@ public class Usuario {
     @Column(name = "rol", nullable = false)
     private String rol;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
