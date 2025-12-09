@@ -1,6 +1,5 @@
 package com.udeateampro.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,18 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.udeateampro.controller.dto.CreateKitSolucionRequest;
-import com.udeateampro.controller.dto.CreateComponenteKitRequest;
-import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.entity.ComponenteKit;
-import com.udeateampro.repository.KitSolucionRepository;
+import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.repository.ComponenteKitRepository;
+import com.udeateampro.repository.KitSolucionRepository;
 
 @Service
 public class KitSolucionService {
 
     @Autowired
     private KitSolucionRepository kitSolucionRepository;
-    
+
     @Autowired
     private ComponenteKitRepository componenteKitRepository;
 
@@ -28,26 +26,20 @@ public class KitSolucionService {
         var kitSolucion = KitSolucion.builder()
                 .nombre(request.nombre())
                 .descripcion(request.descripcion())
-                .estado(request.estado() != null ? request.estado() : true)
+                .estado(Boolean.TRUE.equals(request.estado()))
                 .build();
         kitSolucion = kitSolucionRepository.save(kitSolucion);
-        
-        // Crear componentes si existen
-        if (request.componentes() != null && !request.componentes().isEmpty()) {
-            for (var compDTO : request.componentes()) {
-                if (compDTO.id_producto() != null && compDTO.cantidad() != null) {
-                    var componente = ComponenteKit.builder()
-                            .kitSolucion(kitSolucion.getId_kit())
-                            .producto(compDTO.id_producto())
-                            .cantidad(compDTO.cantidad())
-                            .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : true)
-                            .build();
-                    componenteKitRepository.save(componente);
-                }
-            }
+
+        for (var compDTO : request.componentes()) {
+            var componente = ComponenteKit.builder()
+                    .kitSolucion(kitSolucion.getId_kit())
+                    .producto(compDTO.id_producto())
+                    .cantidad(compDTO.cantidad())
+                    .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
+                    .estado(Boolean.TRUE.equals(compDTO.estado()))
+                    .build();
+            componenteKitRepository.save(componente);
         }
-        
         return kitSolucion;
     }
 
@@ -56,7 +48,7 @@ public class KitSolucionService {
         // Los componentes se cargarán en el controlador o se puede usar un DTO
         return kits;
     }
-    
+
     public List<ComponenteKit> getComponentesByKit(Long kitId) {
         return componenteKitRepository.findByKitSolucion(kitId);
     }
@@ -72,10 +64,10 @@ public class KitSolucionService {
             existing.setEstado(request.estado());
         }
         existing = kitSolucionRepository.save(existing);
-        
+
         // Eliminar componentes existentes y crear nuevos
         componenteKitRepository.deleteByKitSolucion(id);
-        
+
         // Crear nuevos componentes
         if (request.componentes() != null && !request.componentes().isEmpty()) {
             for (var compDTO : request.componentes()) {
@@ -85,13 +77,13 @@ public class KitSolucionService {
                             .producto(compDTO.id_producto())
                             .cantidad(compDTO.cantidad())
                             .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : true)
+                            .estado(Boolean.TRUE.equals(compDTO.estado()))
                             .build();
                     componenteKitRepository.save(componente);
                 }
             }
         }
-        
+
         return existing;
     }
 
