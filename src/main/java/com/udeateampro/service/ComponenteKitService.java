@@ -25,6 +25,19 @@ public class ComponenteKitService {
     }
 
     public ComponenteKit createComponenteKit(CreateComponenteKitRequest request) {
+        if (request.kitsolucion() == null) {
+            throw new IllegalArgumentException("Kit de solucion cannot be null");
+        }
+        if (request.producto() == null) {
+            throw new IllegalArgumentException("Producto cannot be null");
+        }
+        if (request.cantidad() == null || request.cantidad() <= 0) {
+            throw new IllegalArgumentException("Cantidad must be greater than zero");
+        }
+        if (request.instrucciones() == null) {
+            throw new IllegalArgumentException("Instrucciones cannot be null");
+        }
+
         var componenteKit = ComponenteKit.builder()
                 .kitSolucion(request.kitsolucion())
                 .producto(request.producto())
