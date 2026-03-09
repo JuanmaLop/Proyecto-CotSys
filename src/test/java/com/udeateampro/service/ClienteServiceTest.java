@@ -31,6 +31,8 @@ class ClienteServiceTest {
 
     private Cliente cliente2;
 
+    private CreateClienteRequest createRequest;
+
     @BeforeEach
     void setUp() {  
         cliente1 = Cliente.builder()
@@ -52,6 +54,8 @@ class ClienteServiceTest {
                 .municipio("Test Municipio 2")
                 .autorrentenedor(false)
                 .build();
+
+        createRequest = new CreateClienteRequest(1L, "Test Cliente", "123456789", "Test Address", "Test Regimen", "Test Municipio", true);
     }
 
     @Test
@@ -89,16 +93,7 @@ class ClienteServiceTest {
     void createClienteShouldReturnCreatedCliente() {
         when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente1);
 
-        var request = new CreateClienteRequest(
-                cliente1.getNombre(),
-                cliente1.getNit(),
-                cliente1.getDireccion(),
-                cliente1.getTipoRegimen(),
-                cliente1.getMunicipio(),
-                cliente1.getAutorrentenedor()
-        );
-
-        var createdCliente = clienteService.createCliente(request);
+        Cliente createdCliente = clienteService.createCliente(createRequest);
 
         assertNotNull(createdCliente);
         assertEquals(cliente1.getId_cliente(), createdCliente.getId_cliente());
@@ -112,8 +107,10 @@ class ClienteServiceTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
+
 
         assertThrows(Exception.class, () -> clienteService.createCliente(request)); 
     }

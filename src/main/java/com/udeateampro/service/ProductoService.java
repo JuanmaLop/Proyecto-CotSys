@@ -53,7 +53,6 @@ public class ProductoService {
             producto.setCostoBase(updatedProducto.getCostoBase());
             producto.setMonedaOriginal(updatedProducto.getMonedaOriginal());
             producto.setTipo(updatedProducto.getTipo());
-            producto.setTipo(updatedProducto.getTipo());
             producto.setEstado(updatedProducto.getEstado());
             return productoRepository.save(producto);
         }else{

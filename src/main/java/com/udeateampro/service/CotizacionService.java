@@ -26,6 +26,28 @@ public class CotizacionService {
     //crear producto
     public Cotizacion createCotizacion(CreateCotizacionRequest request) {
 
+        if (request.estado() == null || request.estado().trim().isEmpty()) {
+            throw new IllegalArgumentException("Estado cannot be null or empty");
+        }
+        if (request.fechaCreacion() == null) {
+            throw new IllegalArgumentException("Fecha de creación cannot be null");
+        }
+        if (request.fechaValidez() == null) {
+            throw new IllegalArgumentException("Fecha de validez cannot be null");
+        }
+        if (request.margenGeneral() == null) {
+            throw new IllegalArgumentException("Margen general cannot be null");
+        }
+        if (request.monedaCotizacion() == null || request.monedaCotizacion().trim().isEmpty()) {
+            throw new IllegalArgumentException("Moneda de cotización cannot be null or empty");
+        }
+        if (request.usuario() == null) {
+            throw new IllegalArgumentException("Usuario cannot be null");
+        }
+        if (request.cliente() == null) {
+            throw new IllegalArgumentException("Cliente cannot be null");
+        }
+
         Cotizacion cotizacion = new Cotizacion();
 
         cotizacion.setEstado(request.estado());

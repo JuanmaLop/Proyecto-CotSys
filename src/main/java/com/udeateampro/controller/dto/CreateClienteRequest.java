@@ -1,6 +1,7 @@
 package com.udeateampro.controller.dto;
 
 public record CreateClienteRequest(
+        Long idCliente,
         String nombre,
         String nit,
         String direccion,

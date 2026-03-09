@@ -124,6 +124,7 @@ class AuthServiceTest {
                 .expirado(false)
                 .revocado(false)
                 .build();
+                
         when(tokenRepository.findAll()).thenReturn(List.of(token));
 
         authService.revokeAllUserTokens(usuario);
