@@ -14,8 +14,11 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          organization: your-org
-          projectKey: your-org_project
-          args: -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco/jacoco.xml
+          args: >
+            -Dsonar.organization=juanmalop
+            -Dsonar.projectKey=JuanmaLop_Proyecto-CotSys
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+          
