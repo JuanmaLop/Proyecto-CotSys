@@ -1,0 +1,23 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Build + Test + Sonar
+        run: >
+          ./mvnw -B clean verify sonar:sonar
+          -Dsonar.organization=TU_ORG
+          -Dsonar.projectKey=TU_ORG_Proyecto-CotSys
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.token=${SONAR_TOKEN}
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco/jacoco.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+          
