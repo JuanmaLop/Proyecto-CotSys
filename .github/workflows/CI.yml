@@ -8,7 +8,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
       - name: Build & tests
         run: mvn -B -DskipTests=false clean verify
       - name: SonarCloud Scan
