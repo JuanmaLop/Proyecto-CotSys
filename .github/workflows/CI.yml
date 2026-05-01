@@ -10,6 +10,14 @@ jobs:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
+      - name: Listar artefactos y mostrar jacoco.xml
+        run: |
+          echo "Archivos target:"
+          find . -maxdepth 3 -name target -type d -print -exec ls -R {} \;
+          echo "Contenido de target/jacoco (si existe):"
+          ls -la target/jacoco || true
+          echo "Primeras 120 líneas de jacoco.xml (si existe):"
+          sed -n '1,120p' target/jacoco/jacoco.xml || true
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
