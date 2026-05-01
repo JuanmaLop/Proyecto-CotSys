@@ -31,7 +31,7 @@ class AuthControllerTest {
     private TokenResponse tokenResponse;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         loginRequest = new LoginRequest("user@example.com", "password123");
         createUserRequest = new CreateUserRequest("John Doe", "john@example.com", "VENDEDOR", "password123");
         tokenResponse = new TokenResponse("access-token-123", "refresh-token-456");
@@ -44,7 +44,7 @@ class AuthControllerTest {
         ResponseEntity<TokenResponse> response = authController.login(loginRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(tokenResponse, response.getBody());
         verify(authService).login(loginRequest);
     }
@@ -56,7 +56,7 @@ class AuthControllerTest {
         ResponseEntity<TokenResponse> response = authController.createUser(createUserRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(tokenResponse, response.getBody());
         verify(authService).createUser(createUserRequest);
     }

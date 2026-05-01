@@ -1,18 +1,22 @@
 package com.udeateampro.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
@@ -34,7 +38,7 @@ class CotizacionControllerTest {
     private CreateCotizacionRequest createRequest;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         cotizacion1 = new Cotizacion();
         cotizacion1.setId(1L);
         cotizacion1.setUsuario(1L);
@@ -73,7 +77,7 @@ class CotizacionControllerTest {
         ResponseEntity<Cotizacion> response = cotizacionController.addCotizacion(createRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(cotizacion1, response.getBody());
         verify(cotizacionService).createCotizacion(createRequest);
     }
@@ -84,11 +88,14 @@ class CotizacionControllerTest {
         when(cotizacionService.getAllCotizaciones()).thenReturn(cotizaciones);
 
         ResponseEntity<List<Cotizacion>> response = cotizacionController.getAllCotizaciones();
+        List<Cotizacion> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
         assertEquals(cotizaciones, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(cotizaciones, body);
+        assertEquals(2, body.size());
         verify(cotizacionService).getAllCotizaciones();
     }
 
@@ -99,9 +106,9 @@ class CotizacionControllerTest {
         ResponseEntity<List<Cotizacion>> response = cotizacionController.getAllCotizaciones();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(List.of(), response.getBody());
         verify(cotizacionService).getAllCotizaciones();
     }
 
@@ -122,7 +129,7 @@ class CotizacionControllerTest {
         ResponseEntity<Cotizacion> response = cotizacionController.updateCotizacion(1L, cotizacion1);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedCotizacion, response.getBody());
         verify(cotizacionService).updateCotizacion(1L, cotizacion1);
     }
@@ -134,7 +141,7 @@ class CotizacionControllerTest {
         ResponseEntity<Cotizacion> response = cotizacionController.deleteCotizacion(1L);
 
         assertNotNull(response);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(cotizacionService).deleteCotizacion(1L);
     }

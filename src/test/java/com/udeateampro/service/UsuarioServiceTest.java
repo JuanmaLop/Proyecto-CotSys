@@ -30,12 +30,11 @@ class UsuarioServiceTest {
 
     private Usuario usuario1;
     private Usuario usuario2;
-    private Usuario adminUsuario;
     private UpdateUserRequest updateRequest1;
     private UpdateUserRequest updateRequest2;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         usuario1 = Usuario.builder()
                 .id(1L)
                 .nombre("Usuario Uno")
@@ -52,15 +51,6 @@ class UsuarioServiceTest {
                 .rol("COMPRADOR")
                 .password("password456")
                 .estado(false)
-                .build();
-
-        adminUsuario = Usuario.builder()
-                .id(3L)
-                .nombre("Admin")
-                .email("admin@example.com")
-                .rol("ADMINISTRADOR")
-                .password("adminpass")
-                .estado(true)
                 .build();
 
         updateRequest1 = new UpdateUserRequest("usuario1@example.com", "GERENTE", false);

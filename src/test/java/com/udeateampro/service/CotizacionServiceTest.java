@@ -1,18 +1,22 @@
 package com.udeateampro.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
@@ -65,6 +69,7 @@ class CotizacionServiceTest {
         cotizacion2.setCliente(2L);
     }
 
+    @Test
     void getAllCotizacionesShouldReturnAllCotizacionesList() {
         when(cotizacionRepository.findAll()).thenReturn(List.of(cotizacion1, cotizacion2));
 
@@ -74,6 +79,16 @@ class CotizacionServiceTest {
         assertEquals(2, cotizaciones.size());
         assertEquals(cotizacion1.getId(), cotizaciones.get(0).getId());
         assertEquals(cotizacion2.getId(), cotizaciones.get(1).getId());
+    }
+
+    @Test
+    void getAllCotizacionesShouldReturnEmptyList() {
+        when(cotizacionRepository.findAll()).thenReturn(List.of());
+
+        List<Cotizacion> cotizaciones = cotizacionService.getAllCotizaciones();
+
+        assertNotNull(cotizaciones);
+        assertEquals(0, cotizaciones.size());
     }
 
     @Test
@@ -126,6 +141,111 @@ class CotizacionServiceTest {
                 1L,
                 1L,
                 "", 
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                "USD"
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenFechaCreacionIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                1L,
+                "Test Estado",
+                null,
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                "USD"
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenFechaValidezIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                1L,
+                "Test Estado",
+                LocalDate.now(),
+                null,
+                java.math.BigDecimal.valueOf(10.0),
+                "USD"
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenMargenGeneralIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                1L,
+                "Test Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                null,
+                "USD"
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenMonedaCotizacionIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                1L,
+                "Test Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                null
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenMonedaCotizacionIsEmpty() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                1L,
+                "Test Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                ""
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenUsuarioIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                null,
+                1L,
+                "Test Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                "USD"
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> cotizacionService.createCotizacion(request));
+    }
+
+    @Test
+    void createCotizacionShouldThrowExceptionWhenClienteIsNull() {
+        CreateCotizacionRequest request = new CreateCotizacionRequest(
+                1L,
+                null,
+                "Test Estado",
                 LocalDate.now(),
                 LocalDate.now().plusDays(30),
                 java.math.BigDecimal.valueOf(10.0),

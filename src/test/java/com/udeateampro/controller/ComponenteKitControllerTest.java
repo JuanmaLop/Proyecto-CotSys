@@ -1,16 +1,21 @@
 package com.udeateampro.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
@@ -32,7 +37,7 @@ class ComponenteKitControllerTest {
     private CreateComponenteKitRequest createRequest;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         componenteKit1 = ComponenteKit.builder()
                 .id_componente_kit(1L)
                 .kitSolucion(1L)
@@ -66,7 +71,7 @@ class ComponenteKitControllerTest {
         ResponseEntity<ComponenteKit> response = componenteKitController.addComponenteKit(createRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(componenteKit1, response.getBody());
         verify(componenteKitService).createComponenteKit(createRequest);
     }
@@ -79,9 +84,11 @@ class ComponenteKitControllerTest {
         ResponseEntity<List<ComponenteKit>> response = componenteKitController.getAllComponenteKits();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(componenteKits, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(200, response.getStatusCode().value());
+        List<ComponenteKit> body = response.getBody();
+        assertNotNull(body);
+        assertEquals(componenteKits, body);
+        assertEquals(2, body.size());
         verify(componenteKitService).getAllComponenteKits();
     }
 
@@ -92,9 +99,10 @@ class ComponenteKitControllerTest {
         ResponseEntity<List<ComponenteKit>> response = componenteKitController.getAllComponenteKits();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(200, response.getStatusCode().value());
+        List<ComponenteKit> body = response.getBody();
+        assertNotNull(body);
+        assertTrue(body.isEmpty());
         verify(componenteKitService).getAllComponenteKits();
     }
 
@@ -114,7 +122,7 @@ class ComponenteKitControllerTest {
         ResponseEntity<ComponenteKit> response = componenteKitController.updateComponenteKit(1L, componenteKit1);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedComponenteKit, response.getBody());
         verify(componenteKitService).updateComponenteKit(1L, componenteKit1);
     }
@@ -126,7 +134,7 @@ class ComponenteKitControllerTest {
         ResponseEntity<Void> response = componenteKitController.deleteComponenteKit(1L);
 
         assertNotNull(response);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(componenteKitService).deleteComponenteKit(1L);
     }

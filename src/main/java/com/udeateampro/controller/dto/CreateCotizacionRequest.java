@@ -1,7 +1,5 @@
 package com.udeateampro.controller.dto;
 
-import jakarta.persistence.Column;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

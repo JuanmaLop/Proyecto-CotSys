@@ -32,7 +32,7 @@ class ProductoServiceTest {
     private CreateProductRequest createRequest;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         producto1 = Producto.builder()
                 .id_producto(1L)
                 .nombre("Producto 1")

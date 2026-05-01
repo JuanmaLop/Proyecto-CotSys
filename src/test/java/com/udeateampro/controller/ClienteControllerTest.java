@@ -32,7 +32,7 @@ class ClienteControllerTest {
     private CreateClienteRequest createRequest;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         cliente1 = Cliente.builder()
                 .id_cliente(1L)
                 .nombre("Cliente Uno")
@@ -71,7 +71,7 @@ class ClienteControllerTest {
         ResponseEntity<Cliente> response = clienteController.addProducto(createRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(cliente1, response.getBody());
         verify(clienteService).createCliente(createRequest);
     }
@@ -82,11 +82,13 @@ class ClienteControllerTest {
         when(clienteService.getAllClientes()).thenReturn(clientes);
 
         ResponseEntity<List<Cliente>> response = clienteController.getAllClientes();
+        List<Cliente> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(clientes, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals(clientes, body);
+        assertEquals(2, body.size());
         verify(clienteService).getAllClientes();
     }
 
@@ -95,11 +97,12 @@ class ClienteControllerTest {
         when(clienteService.getAllClientes()).thenReturn(List.of());
 
         ResponseEntity<List<Cliente>> response = clienteController.getAllClientes();
+        List<Cliente> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertTrue(body.isEmpty());
         verify(clienteService).getAllClientes();
     }
 
@@ -120,7 +123,7 @@ class ClienteControllerTest {
         ResponseEntity<Cliente> response = clienteController.updateCliente(1L, cliente1);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedCliente, response.getBody());
         verify(clienteService).updateCliente(1L, cliente1);
     }
@@ -132,7 +135,7 @@ class ClienteControllerTest {
         ResponseEntity<Cliente> response = clienteController.deleteCliente(1L);
 
         assertNotNull(response);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(clienteService).deleteCliente(1L);
     }

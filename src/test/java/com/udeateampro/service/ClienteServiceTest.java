@@ -34,7 +34,7 @@ class ClienteServiceTest {
     private CreateClienteRequest createRequest;
 
     @BeforeEach
-    void setUp() {  
+    public void setUp() {  
         cliente1 = Cliente.builder()
                 .id_cliente(1L)
                 .nombre("Test Cliente")
@@ -111,8 +111,7 @@ class ClienteServiceTest {
                 null
         );
 
-
-        assertThrows(Exception.class, () -> clienteService.createCliente(request)); 
+        assertThrows(RuntimeException.class, () -> { clienteService.createCliente(request); });
     }
 
     @Test

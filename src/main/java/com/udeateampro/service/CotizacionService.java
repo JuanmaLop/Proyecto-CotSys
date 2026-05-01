@@ -2,7 +2,6 @@ package com.udeateampro.service;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
 import com.udeateampro.entity.Cotizacion;
-import com.udeateampro.entity.Producto;
 import com.udeateampro.repository.CotizacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

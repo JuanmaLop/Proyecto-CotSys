@@ -1,16 +1,21 @@
 package com.udeateampro.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
@@ -36,7 +41,7 @@ class KitSolucionControllerTest {
     private ComponenteKit componenteKit2;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         kitSolucion1 = KitSolucion.builder()
                 .id_kit(1L)
                 .nombre("Kit Básico")
@@ -90,11 +95,12 @@ class KitSolucionControllerTest {
         ResponseEntity<KitSolucionResponse> response = kitSolucionController.addKit(createRequest);
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().id_kit());
-        assertEquals("Kit Básico", response.getBody().nombre());
-        assertEquals(2, response.getBody().componentes().size());
+        assertEquals(200, response.getStatusCode().value());
+        KitSolucionResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(1L, body.id_kit());
+        assertEquals("Kit Básico", body.nombre());
+        assertEquals(2, body.componentes().size());
         verify(kitSolucionService).createKit(createRequest);
         verify(kitSolucionService).getComponentesByKit(1L);
     }
@@ -106,12 +112,14 @@ class KitSolucionControllerTest {
         when(kitSolucionService.getComponentesByKit(2L)).thenReturn(List.of());
 
         ResponseEntity<List<KitSolucionResponse>> response = kitSolucionController.getAllKits();
+        List<KitSolucionResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(2, response.getBody().size());
-        assertEquals("Kit Básico", response.getBody().get(0).nombre());
-        assertEquals("Kit Avanzado", response.getBody().get(1).nombre());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals(2, body.size());
+        assertEquals("Kit Básico", body.get(0).nombre());
+        assertEquals("Kit Avanzado", body.get(1).nombre());
         verify(kitSolucionService).getAllKits();
         verify(kitSolucionService).getComponentesByKit(1L);
         verify(kitSolucionService).getComponentesByKit(2L);
@@ -122,11 +130,12 @@ class KitSolucionControllerTest {
         when(kitSolucionService.getAllKits()).thenReturn(List.of());
 
         ResponseEntity<List<KitSolucionResponse>> response = kitSolucionController.getAllKits();
+        List<KitSolucionResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertTrue(body.isEmpty());
         verify(kitSolucionService).getAllKits();
     }
 
@@ -143,10 +152,12 @@ class KitSolucionControllerTest {
         when(kitSolucionService.getComponentesByKit(1L)).thenReturn(List.of(componenteKit1));
 
         ResponseEntity<KitSolucionResponse> response = kitSolucionController.updateKit(1L, createRequest);
+        KitSolucionResponse body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("Kit Básico Actualizado", response.getBody().nombre());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals("Kit Básico Actualizado", body.nombre());
         verify(kitSolucionService).updateKit(1L, createRequest);
         verify(kitSolucionService).getComponentesByKit(1L);
     }
@@ -158,7 +169,7 @@ class KitSolucionControllerTest {
         ResponseEntity<Void> response = kitSolucionController.deleteKit(1L);
 
         assertNotNull(response);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
         verify(kitSolucionService).deleteKit(1L);
     }

@@ -35,7 +35,7 @@ class KitSolucionServiceTest {
     private CreateKitSolucionRequest createKitRequest;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         kitSolucion1 = KitSolucion.builder()
                 .id_kit(1L)
                 .nombre("Kit Solucion 1")
@@ -117,5 +117,157 @@ class KitSolucionServiceTest {
 
             verify(componenteKitRepository).deleteByKitSolucion(1L);
             verify(kitSolucionRepository).deleteById(1L);
+        }
+
+        @Test
+        void createKitWithComponentesShouldSaveComponents() {
+            // Given
+            List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(10L, 2, "Instrucción 1", true),
+                    new CreateKitSolucionRequest.ComponenteKitDTO(11L, 3, "Instrucción 2", true)
+            );
+            CreateKitSolucionRequest requestWithComponents = new CreateKitSolucionRequest(
+                    "Kit con Componentes",
+                    "Descripción",
+                    true,
+                    componentes
+            );
+
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion createdKit = kitSolucionService.createKit(requestWithComponents);
+
+            // Then
+            assertNotNull(createdKit);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void createKitWithNullComponentesInComponenteShouldSkipIt() {
+            // Given
+            List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(null, 2, "Instrucción 1", true),
+                    new CreateKitSolucionRequest.ComponenteKitDTO(11L, 3, "Instrucción 2", true)
+            );
+            CreateKitSolucionRequest requestWithComponents = new CreateKitSolucionRequest(
+                    "Kit con Componentes",
+                    "Descripción",
+                    true,
+                    componentes
+            );
+
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion createdKit = kitSolucionService.createKit(requestWithComponents);
+
+            // Then
+            assertNotNull(createdKit);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void createKitWithNullCantidadInComponenteShouldSkipIt() {
+            // Given
+            List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(10L, null, "Instrucción 1", true)
+            );
+            CreateKitSolucionRequest requestWithComponents = new CreateKitSolucionRequest(
+                    "Kit con Componentes",
+                    "Descripción",
+                    true,
+                    componentes
+            );
+
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion createdKit = kitSolucionService.createKit(requestWithComponents);
+
+            // Then
+            assertNotNull(createdKit);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void createKitWithNullEstadoShouldDefaultToTrue() {
+            // Given
+            CreateKitSolucionRequest requestWithNullEstado = new CreateKitSolucionRequest(
+                    "Kit Sin Estado",
+                    "Descripción",
+                    null,
+                    null
+            );
+
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion createdKit = kitSolucionService.createKit(requestWithNullEstado);
+
+            // Then
+            assertNotNull(createdKit);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void updateKitWithComponentesShouldDeleteAndRecreate() {
+            // Given
+            List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(12L, 1, "Nueva Instrucción", true)
+            );
+            CreateKitSolucionRequest updateRequest = new CreateKitSolucionRequest(
+                    "Kit Actualizado",
+                    "Descripción Actualizada",
+                    true,
+                    componentes
+            );
+
+            when(kitSolucionRepository.findById(1L)).thenReturn(java.util.Optional.of(kitSolucion1));
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion updatedKit = kitSolucionService.updateKit(1L, updateRequest);
+
+            // Then
+            assertNotNull(updatedKit);
+            verify(componenteKitRepository).deleteByKitSolucion(1L);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void updateKitWithEmptyComponentesShouldOnlyDeleteComponents() {
+            // Given
+            CreateKitSolucionRequest updateRequest = new CreateKitSolucionRequest(
+                    "Kit Actualizado",
+                    "Descripción Actualizada",
+                    true,
+                    List.of()
+            );
+
+            when(kitSolucionRepository.findById(1L)).thenReturn(java.util.Optional.of(kitSolucion1));
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            // When
+            KitSolucion updatedKit = kitSolucionService.updateKit(1L, updateRequest);
+
+            // Then
+            assertNotNull(updatedKit);
+            verify(componenteKitRepository).deleteByKitSolucion(1L);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+        }
+
+        @Test
+        void getComponentesByKitShouldReturnList() {
+            // Given - Mocking returns empty list
+            when(componenteKitRepository.findByKitSolucion(1L)).thenReturn(List.of());
+
+            // When
+            var componentes = kitSolucionService.getComponentesByKit(1L);
+
+            // Then
+            assertNotNull(componentes);
+            assertEquals(0, componentes.size());
+            verify(componenteKitRepository).findByKitSolucion(1L);
         }
 }

@@ -1,6 +1,5 @@
 package com.udeateampro.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.udeateampro.controller.dto.CreateKitSolucionRequest;
-import com.udeateampro.controller.dto.CreateComponenteKitRequest;
-import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.entity.ComponenteKit;
-import com.udeateampro.repository.KitSolucionRepository;
+import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.repository.ComponenteKitRepository;
+import com.udeateampro.repository.KitSolucionRepository;
 
 @Service
 public class KitSolucionService {
@@ -28,7 +26,7 @@ public class KitSolucionService {
         var kitSolucion = KitSolucion.builder()
                 .nombre(request.nombre())
                 .descripcion(request.descripcion())
-                .estado(request.estado() != null ? request.estado() : true)
+                .estado(Boolean.TRUE.equals(request.estado()))
                 .build();
         kitSolucion = kitSolucionRepository.save(kitSolucion);
         
@@ -41,7 +39,7 @@ public class KitSolucionService {
                             .producto(compDTO.id_producto())
                             .cantidad(compDTO.cantidad())
                             .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : true)
+                            .estado(compDTO.estado() != null ? compDTO.estado() : Boolean.TRUE)
                             .build();
                     componenteKitRepository.save(componente);
                 }
@@ -85,7 +83,7 @@ public class KitSolucionService {
                             .producto(compDTO.id_producto())
                             .cantidad(compDTO.cantidad())
                             .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : true)
+                            .estado(compDTO.estado() != null ? compDTO.estado() : Boolean.TRUE)
                             .build();
                     componenteKitRepository.save(componente);
                 }

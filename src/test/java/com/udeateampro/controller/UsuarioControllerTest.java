@@ -33,7 +33,7 @@ class UsuarioControllerTest {
     private UpdateUserRequest updateRequest2;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         usuarioResponse1 = new UsuarioResponse(
                 1L,
                 "Juan Pérez",
@@ -69,11 +69,13 @@ class UsuarioControllerTest {
         when(usuarioService.getAllUsuarios()).thenReturn(usuarios);
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.getAllUsuarios();
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(usuarios, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals(usuarios, body);
+        assertEquals(2, body.size());
         verify(usuarioService).getAllUsuarios();
     }
 
@@ -82,11 +84,12 @@ class UsuarioControllerTest {
         when(usuarioService.getAllUsuarios()).thenReturn(List.of());
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.getAllUsuarios();
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertTrue(body.isEmpty());
         verify(usuarioService).getAllUsuarios();
     }
 
@@ -101,11 +104,13 @@ class UsuarioControllerTest {
         when(usuarioService.updateUser(anyList())).thenReturn(updatedUsers);
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.updateUser(updateRequests);
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(updatedUsers, response.getBody());
-        assertEquals(2, response.getBody().size());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals(updatedUsers, body);
+        assertEquals(2, body.size());
         verify(usuarioService).updateUser(updateRequests);
     }
 
@@ -116,11 +121,12 @@ class UsuarioControllerTest {
         when(usuarioService.updateUser(anyList())).thenReturn(List.of());
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.updateUser(updateRequests);
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertTrue(body.isEmpty());
         verify(usuarioService).updateUser(updateRequests);
     }
 
@@ -134,12 +140,14 @@ class UsuarioControllerTest {
         when(usuarioService.updateUser(updateRequests)).thenReturn(updatedUsers);
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.updateUser(updateRequests);
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(updatedUsers, response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals("ADMINISTRADOR", response.getBody().get(0).rol());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals(updatedUsers, body);
+        assertEquals(1, body.size());
+        assertEquals("ADMINISTRADOR", body.get(0).rol());
         verify(usuarioService).updateUser(updateRequests);
     }
 
@@ -177,10 +185,12 @@ class UsuarioControllerTest {
         when(usuarioService.updateUser(updateRequests)).thenReturn(updatedUsers);
 
         ResponseEntity<List<UsuarioResponse>> response = usuarioController.updateUser(updateRequests);
+        List<UsuarioResponse> body = response.getBody();
 
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("LIDER_TECNICO", response.getBody().get(0).rol());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(body);
+        assertEquals("LIDER_TECNICO", body.get(0).rol());
         verify(usuarioService).updateUser(updateRequests);
     }
 }
