@@ -9,11 +9,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateKitSolucionRequest;
+import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.repository.ComponenteKitRepository;
 import com.udeateampro.repository.KitSolucionRepository;
@@ -66,6 +68,24 @@ class KitSolucionServiceTest {
 
         assertNotNull(createdKit);
         assertEquals(kitSolucion1.getId_kit(), createdKit.getId_kit());    
+        }
+
+        @Test
+        void createKitWithEmptyComponentesShouldNotSaveComponents() {
+            CreateKitSolucionRequest requestWithEmptyComponentes = new CreateKitSolucionRequest(
+                "Kit Sin Componentes",
+                "Descripcion",
+                true,
+                List.of()
+            );
+
+            when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+
+            KitSolucion createdKit = kitSolucionService.createKit(requestWithEmptyComponentes);
+
+            assertNotNull(createdKit);
+            verify(kitSolucionRepository).save(any(KitSolucion.class));
+            verify(componenteKitRepository, never()).save(any(ComponenteKit.class));
         }
 
         @Test
@@ -210,6 +230,30 @@ class KitSolucionServiceTest {
             verify(kitSolucionRepository).save(any(KitSolucion.class));
         }
 
+            @Test
+            void createKitWithNullComponentFieldsShouldUseDefaults() {
+                List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(10L, 2, null, null)
+                );
+                CreateKitSolucionRequest requestWithNullComponentFields = new CreateKitSolucionRequest(
+                    "Kit con Componentes Nulos",
+                    "Descripción",
+                    true,
+                    componentes
+                );
+
+                when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+                when(componenteKitRepository.save(any(ComponenteKit.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+                KitSolucion createdKit = kitSolucionService.createKit(requestWithNullComponentFields);
+
+                assertNotNull(createdKit);
+                ArgumentCaptor<ComponenteKit> componenteCaptor = ArgumentCaptor.forClass(ComponenteKit.class);
+                verify(componenteKitRepository).save(componenteCaptor.capture());
+                assertEquals("", componenteCaptor.getValue().getInstrucciones());
+                assertEquals(Boolean.TRUE, componenteCaptor.getValue().getEstado());
+            }
+
         @Test
         void updateKitWithComponentesShouldDeleteAndRecreate() {
             // Given
@@ -256,6 +300,32 @@ class KitSolucionServiceTest {
             verify(componenteKitRepository).deleteByKitSolucion(1L);
             verify(kitSolucionRepository).save(any(KitSolucion.class));
         }
+
+            @Test
+            void updateKitWithNullEstadoAndNullComponentFieldsShouldUseDefaults() {
+                List<CreateKitSolucionRequest.ComponenteKitDTO> componentes = List.of(
+                    new CreateKitSolucionRequest.ComponenteKitDTO(12L, 1, null, null)
+                );
+                CreateKitSolucionRequest updateRequest = new CreateKitSolucionRequest(
+                    "Kit Actualizado",
+                    "Descripción Actualizada",
+                    null,
+                    componentes
+                );
+
+                when(kitSolucionRepository.findById(1L)).thenReturn(java.util.Optional.of(kitSolucion1));
+                when(kitSolucionRepository.save(any(KitSolucion.class))).thenReturn(kitSolucion1);
+                when(componenteKitRepository.save(any(ComponenteKit.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+                KitSolucion updatedKit = kitSolucionService.updateKit(1L, updateRequest);
+
+                assertNotNull(updatedKit);
+                assertEquals(kitSolucion1.getEstado(), updatedKit.getEstado());
+                ArgumentCaptor<ComponenteKit> componenteCaptor = ArgumentCaptor.forClass(ComponenteKit.class);
+                verify(componenteKitRepository).save(componenteCaptor.capture());
+                assertEquals("", componenteCaptor.getValue().getInstrucciones());
+                assertEquals(Boolean.TRUE, componenteCaptor.getValue().getEstado());
+            }
 
         @Test
         void getComponentesByKitShouldReturnList() {
