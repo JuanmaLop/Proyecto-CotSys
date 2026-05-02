@@ -14,9 +14,12 @@ import com.udeateampro.repository.KitSolucionRepository;
 
 @Service
 public class KitSolucionService {
+    private final KitSolucionRepository kitSolucionRepository;
 
     @Autowired
-    private KitSolucionRepository kitSolucionRepository;
+    public KitSolucionService(KitSolucionRepository kitSolucionRepository) {
+        this.kitSolucionRepository = kitSolucionRepository;
+    }
     
     @Autowired
     private ComponenteKitRepository componenteKitRepository;
@@ -29,30 +32,16 @@ public class KitSolucionService {
                 .estado(Boolean.TRUE.equals(request.estado()))
                 .build();
         kitSolucion = kitSolucionRepository.save(kitSolucion);
-        
+
         // Crear componentes si existen
-        if (request.componentes() != null && !request.componentes().isEmpty()) {
-            for (var compDTO : request.componentes()) {
-                if (compDTO.id_producto() != null && compDTO.cantidad() != null) {
-                    var componente = ComponenteKit.builder()
-                            .kitSolucion(kitSolucion.getId_kit())
-                            .producto(compDTO.id_producto())
-                            .cantidad(compDTO.cantidad())
-                            .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : Boolean.TRUE)
-                            .build();
-                    componenteKitRepository.save(componente);
-                }
-            }
-        }
-        
+        createComponentesForKit(kitSolucion.getId_kit(), request.componentes());
+
         return kitSolucion;
     }
 
     public List<KitSolucion> getAllKits() {
-        List<KitSolucion> kits = kitSolucionRepository.findAll();
         // Los componentes se cargarán en el controlador o se puede usar un DTO
-        return kits;
+        return kitSolucionRepository.findAll();
     }
     
     public List<ComponenteKit> getComponentesByKit(Long kitId) {
@@ -70,26 +59,11 @@ public class KitSolucionService {
             existing.setEstado(request.estado());
         }
         existing = kitSolucionRepository.save(existing);
-        
+
         // Eliminar componentes existentes y crear nuevos
         componenteKitRepository.deleteByKitSolucion(id);
-        
-        // Crear nuevos componentes
-        if (request.componentes() != null && !request.componentes().isEmpty()) {
-            for (var compDTO : request.componentes()) {
-                if (compDTO.id_producto() != null && compDTO.cantidad() != null) {
-                    var componente = ComponenteKit.builder()
-                            .kitSolucion(id)
-                            .producto(compDTO.id_producto())
-                            .cantidad(compDTO.cantidad())
-                            .instrucciones(compDTO.instrucciones() != null ? compDTO.instrucciones() : "")
-                            .estado(compDTO.estado() != null ? compDTO.estado() : Boolean.TRUE)
-                            .build();
-                    componenteKitRepository.save(componente);
-                }
-            }
-        }
-        
+        createComponentesForKit(id, request.componentes());
+
         return existing;
     }
 
@@ -99,6 +73,37 @@ public class KitSolucionService {
         componenteKitRepository.deleteByKitSolucion(id);
         // Luego eliminar el kit
         kitSolucionRepository.deleteById(id);
+    }
+
+    private void createComponentesForKit(Long kitId, List<CreateKitSolucionRequest.ComponenteKitDTO> componentes) {
+        if (componentes == null || componentes.isEmpty()) {
+            return;
+        }
+
+        for (var compDTO : componentes) {
+            if (isValidComponente(compDTO)) {
+                var componente = buildComponenteFromDTO(kitId, compDTO);
+                componenteKitRepository.save(componente);
+            }
+        }
+    }
+
+    private boolean isValidComponente(CreateKitSolucionRequest.ComponenteKitDTO compDTO) {
+        return compDTO.id_producto() != null && compDTO.cantidad() != null;
+    }
+
+    private ComponenteKit buildComponenteFromDTO(Long kitId, CreateKitSolucionRequest.ComponenteKitDTO compDTO) {
+        return ComponenteKit.builder()
+                .kitSolucion(kitId)
+                .producto(compDTO.id_producto())
+                .cantidad(compDTO.cantidad())
+                .instrucciones(getDefaultIfNull(compDTO.instrucciones(), ""))
+                .estado(getDefaultIfNull(compDTO.estado(), Boolean.TRUE))
+                .build();
+    }
+
+    private <T> T getDefaultIfNull(T value, T defaultValue) {
+        return value != null ? value : defaultValue;
     }
 
 }

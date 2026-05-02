@@ -8,14 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udeateampro.controller.dto.CreateClienteRequest;
+import com.udeateampro.controller.dto.UpdateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.repository.ClienteRepository;
 
 @Service
 public class ClienteService {
-
+    
+    private final ClienteRepository clienteRepository;
     @Autowired
-    private ClienteRepository clienteRepository;
+    public ClienteService(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
 
     //Obtener todos los clientes
     public List<Cliente> getAllClientes() {
@@ -23,8 +27,8 @@ public class ClienteService {
     }
 
     //Obtener cliente por id
-    public Optional<Cliente> getClienteById(Long id_cliente) {
-        return clienteRepository.findById(id_cliente);
+    public Optional<Cliente> getClienteById(Long idCliente) {
+        return clienteRepository.findById(idCliente);
     }
 
     //crear cliente
@@ -67,26 +71,26 @@ public class ClienteService {
 }
 
     //Actualizar cliente
-    public Cliente updateCliente(Long id_cliente, Cliente updatedCliente) {
-        Optional<Cliente> existingCliente = clienteRepository.findById(id_cliente);
+    public Cliente updateCliente(Long idCliente, UpdateClienteRequest request) {
+        Optional<Cliente> existingCliente = clienteRepository.findById(idCliente);
 
         if(existingCliente.isPresent()) {
             Cliente cliente = existingCliente.get();
-            cliente.setNombre(updatedCliente.getNombre());
-            cliente.setNit(updatedCliente.getNit());
-            cliente.setDireccion(updatedCliente.getDireccion());
-            cliente.setTipoRegimen(updatedCliente.getTipoRegimen());
-            cliente.setMunicipio(updatedCliente.getMunicipio());
+            cliente.setNombre(request.nombre());
+            cliente.setNit(request.nit());
+            cliente.setDireccion(request.direccion());
+            cliente.setTipoRegimen(request.tipoRegimen());
+            cliente.setMunicipio(request.municipio());
             return clienteRepository.save(cliente);
         }else{
-            throw new RuntimeException("No existe el cliente con id:" + id_cliente);
+            throw new IllegalArgumentException("No existe el cliente con id:" + idCliente);
         }
     }
 
-    public void deleteCliente(Long id_cliente) {
-        if(!clienteRepository.existsById(id_cliente)) {
-            throw new RuntimeException("No existe el cliente con id:" + id_cliente);
+    public void deleteCliente(Long idCliente) {
+        if(!clienteRepository.existsById(idCliente)) {
+            throw new IllegalArgumentException("No existe el cliente con id:" + idCliente);
         }
-        clienteRepository.deleteById(id_cliente);
+        clienteRepository.deleteById(idCliente);
     }
 }

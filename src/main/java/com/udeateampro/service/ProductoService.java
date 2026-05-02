@@ -7,14 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udeateampro.controller.dto.CreateProductRequest;
+import com.udeateampro.controller.dto.UpdateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.repository.ProductoRepository;
 
 @Service
 public class ProductoService {
+    private final ProductoRepository productoRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    public ProductoService(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
+    }
 
     //Obtener todos los productos
     public List<Producto> getAllProductos() {
@@ -41,29 +45,29 @@ public class ProductoService {
     }
 
     //Actualizar producto
-    public Producto updateProducto(Long id_producto, Producto updatedProducto) {
-        Optional<Producto> existingProducto = productoRepository.findById(id_producto);
+    public Producto updateProducto(Long idProducto, UpdateProductRequest request) {
+        Optional<Producto> existingProducto = productoRepository.findById(idProducto);
 
         if(existingProducto.isPresent()) {
             Producto producto = existingProducto.get();
-            producto.setNombre(updatedProducto.getNombre());
-            producto.setDescripcion(updatedProducto.getDescripcion());
-            producto.setCategoria(updatedProducto.getCategoria());
-            producto.setUnidadMedida(updatedProducto.getUnidadMedida());
-            producto.setCostoBase(updatedProducto.getCostoBase());
-            producto.setMonedaOriginal(updatedProducto.getMonedaOriginal());
-            producto.setTipo(updatedProducto.getTipo());
-            producto.setEstado(updatedProducto.getEstado());
+            producto.setNombre(request.nombre());
+            producto.setDescripcion(request.descripcion());
+            producto.setCategoria(request.categoria());
+            producto.setUnidadMedida(request.unidadMedida());
+            producto.setCostoBase(request.costoBase());
+            producto.setMonedaOriginal(request.monedaOriginal());
+            producto.setTipo(request.tipo());
+            producto.setEstado(request.estado());
             return productoRepository.save(producto);
         }else{
-            throw new RuntimeException("No existe el producto con id:" + id_producto);
+            throw new IllegalArgumentException("No existe el producto con id:" + idProducto);
         }
     }
 
-    public void deleteProducto(Long id_producto) {
-        if(!productoRepository.existsById(id_producto)) {
-            throw new RuntimeException("No existe el producto con id:" + id_producto);
+    public void deleteProducto(Long idProducto) {
+        if(!productoRepository.existsById(idProducto)) {
+            throw new IllegalArgumentException("No existe el producto con id:" + idProducto);
         }
-        productoRepository.deleteById(id_producto);
+        productoRepository.deleteById(idProducto);
     }
 }

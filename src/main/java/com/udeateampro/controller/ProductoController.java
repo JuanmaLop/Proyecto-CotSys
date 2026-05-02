@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,17 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udeateampro.controller.dto.CreateProductRequest;
+import com.udeateampro.controller.dto.UpdateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.service.ProductoService;
 
 @RestController
 @RequestMapping("/api/productos")
-@CrossOrigin(origins = "*")//Permite peticiones desde el Front
 
 public class ProductoController {
-
+    private final ProductoService productoService;
     @Autowired
-    private ProductoService productoService;
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     //Crear producto (admin o líder técnico)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
@@ -45,17 +46,17 @@ public class ProductoController {
 
     //Actualizar producto (admin o líder técnico)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @PutMapping("/{id_producto}/update-producto")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id_producto, @RequestBody Producto producto) {
-        Producto updatedProducto = productoService.updateProducto(id_producto, producto);
+    @PutMapping("/{idProducto}/update-producto")
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long idProducto, @RequestBody UpdateProductRequest request) {
+        Producto updatedProducto = productoService.updateProducto(idProducto, request);
         return ResponseEntity.ok(updatedProducto);
     }
 
     //Eliminar producto (admin o líder técnico)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @DeleteMapping(("/{id_producto}/delete-producto"))
-    public ResponseEntity<Producto> deleteProducto(@PathVariable Long id_producto) {
-        productoService.deleteProducto(id_producto);
+    @DeleteMapping(("/{idProducto}/delete-producto"))
+    public ResponseEntity<Producto> deleteProducto(@PathVariable Long idProducto) {
+        productoService.deleteProducto(idProducto);
         return ResponseEntity.noContent().build();
     }
 

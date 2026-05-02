@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.udeateampro.controller.dto.CreateComponenteKitRequest;
+import com.udeateampro.controller.dto.UpdateComponenteKitRequest;
 import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.service.ComponenteKitService;
 
@@ -14,11 +15,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/componente-kit")
-@CrossOrigin(origins = "*")
 public class ComponenteKitController {
 
+    private final ComponenteKitService componenteKitService;
     @Autowired
-    private ComponenteKitService componenteKitService;
+    public ComponenteKitController(ComponenteKitService componenteKitService) {
+        this.componenteKitService = componenteKitService;
+    }
 
     // Crear componente de kit
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
@@ -37,19 +40,19 @@ public class ComponenteKitController {
 
     // Actualizar un componente
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @PutMapping("/{id_componente_kit}/update")
+    @PutMapping("/{idComponenteKit}/update")
     public ResponseEntity<ComponenteKit> updateComponenteKit(
-            @PathVariable Long id_componente_kit,
-            @RequestBody ComponenteKit componenteKit) {
+            @PathVariable Long idComponenteKit,
+            @RequestBody UpdateComponenteKitRequest request) {
 
-        return ResponseEntity.ok(componenteKitService.updateComponenteKit(id_componente_kit, componenteKit));
+        return ResponseEntity.ok(componenteKitService.updateComponenteKit(idComponenteKit, request));
     }
 
     // Eliminar un componente
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @DeleteMapping("/{id_componente_kit}/delete")
-    public ResponseEntity<Void> deleteComponenteKit(@PathVariable Long id_componente_kit) {
-        componenteKitService.deleteComponenteKit(id_componente_kit);
+    @DeleteMapping("/{idComponenteKit}/delete")
+    public ResponseEntity<Void> deleteComponenteKit(@PathVariable Long idComponenteKit) {
+        componenteKitService.deleteComponenteKit(idComponenteKit);
         return ResponseEntity.noContent().build();
     }
 }

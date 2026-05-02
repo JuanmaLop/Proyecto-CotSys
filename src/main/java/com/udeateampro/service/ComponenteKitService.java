@@ -7,21 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udeateampro.controller.dto.CreateComponenteKitRequest;
+import com.udeateampro.controller.dto.UpdateComponenteKitRequest;
 import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.repository.ComponenteKitRepository;
 
 @Service
 public class ComponenteKitService {
+    private final ComponenteKitRepository componenteKitRepository;
 
     @Autowired
-    private ComponenteKitRepository componenteKitRepository;
+    public ComponenteKitService(ComponenteKitRepository componenteKitRepository) {
+        this.componenteKitRepository = componenteKitRepository;
+    }
 
     public List<ComponenteKit> getAllComponenteKits() {
         return componenteKitRepository.findAll();
     }
 
-    public Optional<ComponenteKit> getComponenteKitById(Long id_componente_kit) {
-        return componenteKitRepository.findById(id_componente_kit);
+    public Optional<ComponenteKit> getComponenteKitById(Long idComponenteKit) {
+        return componenteKitRepository.findById(idComponenteKit);
     }
 
     public ComponenteKit createComponenteKit(CreateComponenteKitRequest request) {
@@ -48,21 +52,21 @@ public class ComponenteKitService {
         return componenteKitRepository.save(componenteKit);
     }
 
-    public ComponenteKit updateComponenteKit(Long id_componente_kit, ComponenteKit updated) {
-        ComponenteKit existing = componenteKitRepository.findById(id_componente_kit)
-                .orElseThrow(() -> new RuntimeException("Componente kit no encontrado"));
+    public ComponenteKit updateComponenteKit(Long idComponenteKit, UpdateComponenteKitRequest request) {
+        ComponenteKit existing = componenteKitRepository.findById(idComponenteKit)
+                .orElseThrow(() -> new IllegalArgumentException("Componente kit no encontrado"));
 
-        existing.setCantidad(updated.getCantidad());
-        existing.setInstrucciones(updated.getInstrucciones());
-        existing.setEstado(updated.getEstado());
+        existing.setCantidad(request.cantidad());
+        existing.setInstrucciones(request.instrucciones());
+        existing.setEstado(request.estado());
 
         return componenteKitRepository.save(existing);
     }
 
-    public void deleteComponenteKit(Long id_componente_kit) {
-        if (!componenteKitRepository.existsById(id_componente_kit)) {
-            throw new RuntimeException("No existe el componente kit con id: " + id_componente_kit);
+    public void deleteComponenteKit(Long idComponenteKit) {
+        if (!componenteKitRepository.existsById(idComponenteKit)) {
+            throw new IllegalArgumentException("No existe el componente kit con id: " + idComponenteKit);
         }
-        componenteKitRepository.deleteById(id_componente_kit);
+        componenteKitRepository.deleteById(idComponenteKit);
     }
 }

@@ -1,6 +1,7 @@
 package com.udeateampro.service;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
+import com.udeateampro.controller.dto.UpdateCotizacionRequest;
 import com.udeateampro.entity.Cotizacion;
 import com.udeateampro.repository.CotizacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import java.util.Optional;
 
 @Service
 public class CotizacionService {
+    private final CotizacionRepository cotizacionRepository;
 
     @Autowired
-    private CotizacionRepository cotizacionRepository;
+    public CotizacionService(CotizacionRepository cotizacionRepository) {
+        this.cotizacionRepository = cotizacionRepository;
+    }
 
     public List<Cotizacion> getAllCotizaciones() {
         return cotizacionRepository.findAll();
@@ -60,28 +64,28 @@ public class CotizacionService {
         return cotizacionRepository.save(cotizacion);
     }
 
-    public Cotizacion updateCotizacion(Long id, Cotizacion updatedCotizacion) {
+    public Cotizacion updateCotizacion(Long id, UpdateCotizacionRequest updatedCotizacion) {
         Optional<Cotizacion> existingCotizacion = cotizacionRepository.findById(id);
 
         if(existingCotizacion.isPresent()) {
             Cotizacion cotizacion = existingCotizacion.get();
-            cotizacion.setEstado(updatedCotizacion.getEstado());
-            cotizacion.setFechaCreacion(updatedCotizacion.getFechaCreacion());
-            cotizacion.setFechaValidez(updatedCotizacion.getFechaValidez());
-            cotizacion.setMargenGeneral(updatedCotizacion.getMargenGeneral());
-            cotizacion.setMonedaCotizacion(updatedCotizacion.getMonedaCotizacion());
-            cotizacion.setUsuario(updatedCotizacion.getUsuario());
-            cotizacion.setCliente(updatedCotizacion.getCliente());
+            cotizacion.setEstado(updatedCotizacion.estado());
+            cotizacion.setFechaCreacion(updatedCotizacion.fechaCreacion());
+            cotizacion.setFechaValidez(updatedCotizacion.fechaValidez());
+            cotizacion.setMargenGeneral(updatedCotizacion.margenGeneral());
+            cotizacion.setMonedaCotizacion(updatedCotizacion.monedaCotizacion());
+            cotizacion.setUsuario(updatedCotizacion.usuario());
+            cotizacion.setCliente(updatedCotizacion.cliente());
             return cotizacionRepository.save(cotizacion);
 
         }else{
-            throw new RuntimeException("No existe la cotización con id:" + id);
+            throw new IllegalArgumentException("No existe la cotización con id:" + id);
         }
     }
 
     public void deleteCotizacion(Long id) {
         if(!cotizacionRepository.existsById(id)) {
-            throw new RuntimeException("No existe la cotización con id:" + id);
+            throw new IllegalArgumentException("No existe la cotización con id:" + id);
         }
         cotizacionRepository.deleteById(id);
     }

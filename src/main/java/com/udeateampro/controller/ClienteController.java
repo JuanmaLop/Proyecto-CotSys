@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,17 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udeateampro.controller.dto.CreateClienteRequest;
+import com.udeateampro.controller.dto.UpdateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.service.ClienteService;
 
 
 @RestController
 @RequestMapping("/api/clientes")
-@CrossOrigin(origins = "*")
 public class ClienteController {
+    private final ClienteService clienteService;
 
     @Autowired
-    private ClienteService clienteService;
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
+
 
     //Crear cliente (solo administrador)
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -45,17 +48,17 @@ public class ClienteController {
 
     //Actualizar cliente (solo administrador)
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PutMapping("/{id_cliente}/update-cliente")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id_cliente, @RequestBody Cliente cliente) {
-        Cliente updatedCliente = clienteService.updateCliente(id_cliente, cliente);
+    @PutMapping("/{idCliente}/update-cliente")
+    public ResponseEntity<Cliente> updateCliente(@PathVariable Long idCliente, @RequestBody UpdateClienteRequest request) {
+        Cliente updatedCliente = clienteService.updateCliente(idCliente, request);
         return ResponseEntity.ok(updatedCliente);
     }
 
     //Eliminar cliente (solo administrador)
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @DeleteMapping(("/{id_cliente}/delete-cliente"))
-    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long id_cliente) {
-        clienteService.deleteCliente(id_cliente);
+    @DeleteMapping(("/{idCliente}/delete-cliente"))
+    public ResponseEntity<Cliente> deleteCliente(@PathVariable Long idCliente) {
+        clienteService.deleteCliente(idCliente);
         return ResponseEntity.noContent().build();
     }
 

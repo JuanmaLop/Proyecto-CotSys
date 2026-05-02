@@ -3,6 +3,8 @@ package com.udeateampro.controller;
 import java.util.List;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
+import com.udeateampro.controller.dto.UpdateCotizacionRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,9 +26,11 @@ import com.udeateampro.service.CotizacionService;
 @CrossOrigin(origins = "*")
 
 public class CotizacionController {
-
+    private final CotizacionService cotizacionService;
     @Autowired
-    private CotizacionService cotizacionService;
+    public CotizacionController(CotizacionService cotizacionService) {
+        this.cotizacionService = cotizacionService;
+    }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @PostMapping("/create-cotizacion")
@@ -43,8 +47,8 @@ public class CotizacionController {
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COMERCIAL')")
     @PutMapping("/{id}/update-cotizacion")
-    public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody Cotizacion cotizacion) {
-        Cotizacion updatedCotizacion = cotizacionService.updateCotizacion(id, cotizacion);
+    public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody UpdateCotizacionRequest request) {
+        Cotizacion updatedCotizacion = cotizacionService.updateCotizacion(id, request);
         return ResponseEntity.ok(updatedCotizacion);
     }
 

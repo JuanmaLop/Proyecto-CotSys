@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_producto")
-    private Long id_producto;
+    @Column(name = "idProducto")
+    private Long idProducto;
 
     @Column(name = "nombre", nullable = false, length = 60)
     private String nombre;
@@ -32,13 +32,13 @@ public class Producto {
     @Column(name = "categoria", nullable = false, length = 60)
     private String categoria;
 
-    @Column(name = "unidad_medida", nullable = false, length = 60)
+    @Column(name = "unidadMedida", nullable = false, length = 60)
     private String unidadMedida;
 
-    @Column(name = "costo_base", nullable = false)
+    @Column(name = "costoBase", nullable = false)
     private Double costoBase;
 
-    @Column(name = "moneda_original", nullable = false, length = 20)
+    @Column(name = "monedaOriginal", nullable = false, length = 20)
     private String monedaOriginal;
 
     @Column(name = "tipo", nullable = false, length = 60)
