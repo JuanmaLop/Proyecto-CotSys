@@ -35,7 +35,7 @@ class ClienteControllerTest {
     @BeforeEach
     void setUp() {
         cliente1 = Cliente.builder()
-                .id_cliente(1L)
+                .idCliente(1L)
                 .nombre("Cliente Uno")
                 .nit("12345678901")
                 .direccion("Dirección 1")
@@ -45,7 +45,7 @@ class ClienteControllerTest {
                 .build();
 
         cliente2 = Cliente.builder()
-                .id_cliente(2L)
+                .idCliente(2L)
                 .nombre("Cliente Dos")
                 .nit("09876543210")
                 .direccion("Dirección 2")
@@ -110,7 +110,7 @@ class ClienteControllerTest {
     @Test
     void updateClienteShouldReturnUpdatedCliente() {
         Cliente updatedCliente = Cliente.builder()
-                .id_cliente(1L)
+                .idCliente(1L)
                 .nombre("Cliente Actualizado")
                 .nit("12345678901")
                 .direccion("Dirección Actualizada")

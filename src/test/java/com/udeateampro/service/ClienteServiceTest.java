@@ -36,7 +36,7 @@ class ClienteServiceTest {
     @BeforeEach
     void setUp() {  
         cliente1 = Cliente.builder()
-                .id_cliente(1L)
+                .idCliente(1L)
                 .nombre("Test Cliente")
                 .nit("123456789")
                 .direccion("Test Address")
@@ -46,7 +46,7 @@ class ClienteServiceTest {
                 .build();
 
         cliente2 = Cliente.builder()
-                .id_cliente(2L)
+                .idCliente(2L)
                 .nombre("Test Cliente 2")
                 .nit("987654321")
                 .direccion("Test Address 2")
@@ -66,8 +66,8 @@ class ClienteServiceTest {
 
         assertNotNull(clientes);
         assertEquals(2, clientes.size());
-        assertEquals(cliente1.getId_cliente(), clientes.get(0).getId_cliente());
-        assertEquals(cliente2.getId_cliente(), clientes.get(1).getId_cliente());
+        assertEquals(cliente1.getIdCliente(), clientes.get(0).getIdCliente());
+        assertEquals(cliente2.getIdCliente(), clientes.get(1).getIdCliente());
     }
 
     @Test
@@ -77,7 +77,7 @@ class ClienteServiceTest {
         var cliente = clienteService.getClienteById(1L);
 
         assertTrue(cliente.isPresent());
-        assertEquals(cliente1.getId_cliente(), cliente.get().getId_cliente());
+        assertEquals(cliente1.getIdCliente(), cliente.get().getIdCliente());
     }
 
     @Test
@@ -96,7 +96,7 @@ class ClienteServiceTest {
         Cliente createdCliente = clienteService.createCliente(createRequest);
 
         assertNotNull(createdCliente);
-        assertEquals(cliente1.getId_cliente(), createdCliente.getId_cliente());
+        assertEquals(cliente1.getIdCliente(), createdCliente.getIdCliente());
     }
 
     @Test
@@ -130,7 +130,7 @@ class ClienteServiceTest {
         var updatedCliente = clienteService.updateCliente(1L, updateRequest);
 
         assertNotNull(updatedCliente);
-        assertEquals(cliente1.getId_cliente(), updatedCliente.getId_cliente());
+        assertEquals(cliente1.getIdCliente(), updatedCliente.getIdCliente());
     }
 
     @Test
