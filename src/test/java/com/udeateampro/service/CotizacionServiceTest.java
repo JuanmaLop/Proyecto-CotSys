@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
+import com.udeateampro.controller.dto.UpdateCotizacionRequest;
 import com.udeateampro.entity.Cotizacion;
 import com.udeateampro.repository.CotizacionRepository;
 
@@ -257,19 +258,20 @@ class CotizacionServiceTest {
 
     @Test
     void updateCotizacionShouldReturnUpdatedCotizacion() {
-        Cotizacion updatedCotizacion = new Cotizacion();
-        updatedCotizacion.setEstado("Updated Estado");
-        updatedCotizacion.setFechaCreacion(LocalDate.now());
-        updatedCotizacion.setFechaValidez(LocalDate.now().plusDays(30));
-        updatedCotizacion.setMargenGeneral(java.math.BigDecimal.valueOf(10.0));
-        updatedCotizacion.setMonedaCotizacion("USD");
-        updatedCotizacion.setUsuario(1L);
-        updatedCotizacion.setCliente(1L);
+        UpdateCotizacionRequest updateRequest = new UpdateCotizacionRequest(
+                "Updated Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                "USD",
+                1L,
+                1L
+        );
 
         when(cotizacionRepository.findById(1L)).thenReturn(Optional.of(cotizacion1));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion1);
 
-        Cotizacion result = cotizacionService.updateCotizacion(1L, updatedCotizacion);
+        Cotizacion result = cotizacionService.updateCotizacion(1L, updateRequest);
 
         assertNotNull(result);
         assertEquals(cotizacion1.getId(), result.getId());
@@ -277,18 +279,19 @@ class CotizacionServiceTest {
 
     @Test
     void updateCotizacionShouldThrowExceptionWhenCotizacionNotFound() {
-        Cotizacion updatedCotizacion = new Cotizacion();
-        updatedCotizacion.setEstado("Updated Estado");
-        updatedCotizacion.setFechaCreacion(LocalDate.now());
-        updatedCotizacion.setFechaValidez(LocalDate.now().plusDays(30));
-        updatedCotizacion.setMargenGeneral(java.math.BigDecimal.valueOf(10.0));
-        updatedCotizacion.setMonedaCotizacion("USD");
-        updatedCotizacion.setUsuario(1L);
-        updatedCotizacion.setCliente(1L);
+        UpdateCotizacionRequest updateRequest = new UpdateCotizacionRequest(
+                "Updated Estado",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                java.math.BigDecimal.valueOf(10.0),
+                "USD",
+                1L,
+                1L
+        );
 
         when(cotizacionRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> cotizacionService.updateCotizacion(1L, updatedCotizacion));
+        assertThrows(RuntimeException.class, () -> cotizacionService.updateCotizacion(1L, updateRequest));
     }
 
     @Test

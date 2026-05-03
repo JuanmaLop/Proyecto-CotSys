@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import com.udeateampro.controller.dto.CreateCotizacionRequest;
+import com.udeateampro.controller.dto.UpdateCotizacionRequest;
 import com.udeateampro.entity.Cotizacion;
 import com.udeateampro.service.CotizacionService;
 
@@ -124,14 +125,24 @@ class CotizacionControllerTest {
         updatedCotizacion.setMargenGeneral(new BigDecimal("20.00"));
         updatedCotizacion.setMonedaCotizacion("COP");
 
-        when(cotizacionService.updateCotizacion(anyLong(), any(Cotizacion.class))).thenReturn(updatedCotizacion);
+        UpdateCotizacionRequest updateRequest = new UpdateCotizacionRequest(
+                "APROBADA",
+                cotizacion1.getFechaCreacion(),
+                cotizacion1.getFechaValidez(),
+                new BigDecimal("20.00"),
+                "COP",
+                1L,
+                1L
+        );
 
-        ResponseEntity<Cotizacion> response = cotizacionController.updateCotizacion(1L, cotizacion1);
+        when(cotizacionService.updateCotizacion(anyLong(), any(UpdateCotizacionRequest.class))).thenReturn(updatedCotizacion);
+
+        ResponseEntity<Cotizacion> response = cotizacionController.updateCotizacion(1L, updateRequest);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedCotizacion, response.getBody());
-        verify(cotizacionService).updateCotizacion(1L, cotizacion1);
+        verify(cotizacionService).updateCotizacion(1L, updateRequest);
     }
 
     @Test
@@ -157,11 +168,21 @@ class CotizacionControllerTest {
 
     @Test
     void updateCotizacionShouldCallServiceWithCorrectParameters() {
-        when(cotizacionService.updateCotizacion(1L, cotizacion1)).thenReturn(cotizacion1);
+        UpdateCotizacionRequest updateRequest = new UpdateCotizacionRequest(
+                cotizacion1.getEstado(),
+                cotizacion1.getFechaCreacion(),
+                cotizacion1.getFechaValidez(),
+                cotizacion1.getMargenGeneral(),
+                cotizacion1.getMonedaCotizacion(),
+                cotizacion1.getUsuario(),
+                cotizacion1.getCliente()
+        );
 
-        cotizacionController.updateCotizacion(1L, cotizacion1);
+        when(cotizacionService.updateCotizacion(1L, updateRequest)).thenReturn(cotizacion1);
 
-        verify(cotizacionService).updateCotizacion(1L, cotizacion1);
+        cotizacionController.updateCotizacion(1L, updateRequest);
+
+        verify(cotizacionService).updateCotizacion(1L, updateRequest);
     }
 
     @Test

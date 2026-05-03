@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import com.udeateampro.controller.dto.CreateClienteRequest;
+import com.udeateampro.controller.dto.UpdateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.service.ClienteService;
 
@@ -118,14 +119,22 @@ class ClienteControllerTest {
                 .autorrentenedor(false)
                 .build();
 
-        when(clienteService.updateCliente(anyLong(), any(Cliente.class))).thenReturn(updatedCliente);
+        UpdateClienteRequest updateRequest = new UpdateClienteRequest(
+                "Cliente Actualizado",
+                "12345678901",
+                "Dirección Actualizada",
+                "Simplificado",
+                "Bogotá"
+        );
 
-        ResponseEntity<Cliente> response = clienteController.updateCliente(1L, cliente1);
+        when(clienteService.updateCliente(anyLong(), any(UpdateClienteRequest.class))).thenReturn(updatedCliente);
+
+        ResponseEntity<Cliente> response = clienteController.updateCliente(1L, updateRequest);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedCliente, response.getBody());
-        verify(clienteService).updateCliente(1L, cliente1);
+        verify(clienteService).updateCliente(1L, updateRequest);
     }
 
     @Test
@@ -151,11 +160,19 @@ class ClienteControllerTest {
 
     @Test
     void updateClienteShouldCallServiceWithCorrectParameters() {
-        when(clienteService.updateCliente(1L, cliente1)).thenReturn(cliente1);
+        UpdateClienteRequest updateRequest = new UpdateClienteRequest(
+                cliente1.getNombre(),
+                cliente1.getNit(),
+                cliente1.getDireccion(),
+                cliente1.getTipoRegimen(),
+                cliente1.getMunicipio()
+        );
 
-        clienteController.updateCliente(1L, cliente1);
+        when(clienteService.updateCliente(1L, updateRequest)).thenReturn(cliente1);
 
-        verify(clienteService).updateCliente(1L, cliente1);
+        clienteController.updateCliente(1L, updateRequest);
+
+        verify(clienteService).updateCliente(1L, updateRequest);
     }
 
     @Test

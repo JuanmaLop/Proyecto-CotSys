@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import com.udeateampro.controller.dto.CreateProductRequest;
+import com.udeateampro.controller.dto.UpdateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.service.ProductoService;
 
@@ -39,7 +40,7 @@ class ProductoControllerTest {
     @BeforeEach
     public void setUp() {
         producto1 = Producto.builder()
-                .id_producto(1L)
+                .idProducto(1L)
                 .nombre("Producto A")
                 .descripcion("Descripción del producto A")
                 .categoria("Electrónica")
@@ -51,7 +52,7 @@ class ProductoControllerTest {
                 .build();
 
         producto2 = Producto.builder()
-                .id_producto(2L)
+                .idProducto(2L)
                 .nombre("Producto B")
                 .descripcion("Descripción del producto B")
                 .categoria("Software")
@@ -118,7 +119,7 @@ class ProductoControllerTest {
     @Test
     void updateProductoShouldReturnUpdatedProducto() {
         Producto updatedProducto = Producto.builder()
-                .id_producto(1L)
+                .idProducto(1L)
                 .nombre("Producto A Actualizado")
                 .descripcion("Descripción actualizada")
                 .categoria("Electrónica")
@@ -129,14 +130,25 @@ class ProductoControllerTest {
                 .estado(true)
                 .build();
 
-        when(productoService.updateProducto(anyLong(), any(Producto.class))).thenReturn(updatedProducto);
+        UpdateProductRequest updateRequest = new UpdateProductRequest(
+                "Producto Actualizado",
+                "Descripción actualizada",
+                "Electrónica",
+                "Unidad",
+                150.0,
+                "COP",
+                "Hardware",
+                true
+        );
 
-        ResponseEntity<Producto> response = productoController.updateProducto(1L, producto1);
+        when(productoService.updateProducto(anyLong(), any(UpdateProductRequest.class))).thenReturn(updatedProducto);
+
+        ResponseEntity<Producto> response = productoController.updateProducto(1L, updateRequest);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedProducto, response.getBody());
-        verify(productoService).updateProducto(1L, producto1);
+        verify(productoService).updateProducto(1L, updateRequest);
     }
 
     @Test
@@ -162,11 +174,22 @@ class ProductoControllerTest {
 
     @Test
     void updateProductoShouldCallServiceWithCorrectParameters() {
-        when(productoService.updateProducto(1L, producto1)).thenReturn(producto1);
+        UpdateProductRequest updateRequest = new UpdateProductRequest(
+                producto1.getNombre(),
+                producto1.getDescripcion(),
+                producto1.getCategoria(),
+                producto1.getUnidadMedida(),
+                producto1.getCostoBase(),
+                producto1.getMonedaOriginal(),
+                producto1.getTipo(),
+                producto1.getEstado()
+        );
 
-        productoController.updateProducto(1L, producto1);
+        when(productoService.updateProducto(1L, updateRequest)).thenReturn(producto1);
 
-        verify(productoService).updateProducto(1L, producto1);
+        productoController.updateProducto(1L, updateRequest);
+
+        verify(productoService).updateProducto(1L, updateRequest);
     }
 
     @Test

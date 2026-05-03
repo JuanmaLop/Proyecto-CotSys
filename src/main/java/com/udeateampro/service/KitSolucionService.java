@@ -15,14 +15,13 @@ import com.udeateampro.repository.KitSolucionRepository;
 @Service
 public class KitSolucionService {
     private final KitSolucionRepository kitSolucionRepository;
+    private final ComponenteKitRepository componenteKitRepository;
 
     @Autowired
-    public KitSolucionService(KitSolucionRepository kitSolucionRepository) {
+    public KitSolucionService(KitSolucionRepository kitSolucionRepository, ComponenteKitRepository componenteKitRepository) {
         this.kitSolucionRepository = kitSolucionRepository;
+        this.componenteKitRepository = componenteKitRepository;
     }
-    
-    @Autowired
-    private ComponenteKitRepository componenteKitRepository;
 
     @Transactional
     public KitSolucion createKit(CreateKitSolucionRequest request) {

@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateClienteRequest;
+import com.udeateampro.controller.dto.UpdateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.repository.ClienteRepository;
 
@@ -115,10 +116,18 @@ class ClienteServiceTest {
 
     @Test
     void updateClienteShouldReturnUpdatedCliente() {
+        UpdateClienteRequest updateRequest = new UpdateClienteRequest(
+                "Cliente Actualizado",
+                "12345678901",
+                "Dirección Actualizada",
+                "Simplificado",
+                "Bogotá"
+        );
+
         when(clienteRepository.findById(1L)).thenReturn(java.util.Optional.of(cliente1));
         when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente1);
 
-        var updatedCliente = clienteService.updateCliente(1L, cliente1);
+        var updatedCliente = clienteService.updateCliente(1L, updateRequest);
 
         assertNotNull(updatedCliente);
         assertEquals(cliente1.getId_cliente(), updatedCliente.getId_cliente());
@@ -126,9 +135,17 @@ class ClienteServiceTest {
 
     @Test
     void updateClienteShouldThrowExceptionWhenClienteNotFound() {
+        UpdateClienteRequest updateRequest = new UpdateClienteRequest(
+                "Cliente Actualizado",
+                "12345678901",
+                "Dirección Actualizada",
+                "Simplificado",
+                "Bogotá"
+        );
+
         when(clienteRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> clienteService.updateCliente(1L, cliente1));
+        assertThrows(RuntimeException.class, () -> clienteService.updateCliente(1L, updateRequest));
     }
     
     @Test

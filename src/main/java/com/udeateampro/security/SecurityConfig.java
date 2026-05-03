@@ -104,7 +104,7 @@ public class SecurityConfig {
 
 	private void logout(final String token){
 		if (token == null || !token.startsWith("Bearer ")) {
-			throw new RuntimeException("Token inválido");
+			throw new IllegalArgumentException("Token inválido");
 		}	
 
 		final String jwtToken = token.substring(7);

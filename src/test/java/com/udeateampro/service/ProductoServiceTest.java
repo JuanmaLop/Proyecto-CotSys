@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateProductRequest;
+import com.udeateampro.controller.dto.UpdateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.repository.ProductoRepository;
 
@@ -34,7 +35,7 @@ class ProductoServiceTest {
     @BeforeEach
     public void setUp() {
         producto1 = Producto.builder()
-                .id_producto(1L)
+                .idProducto(1L)
                 .nombre("Producto 1")
                 .descripcion("Descripción del producto 1")
                 .categoria("Categoría 1")
@@ -46,7 +47,7 @@ class ProductoServiceTest {
                 .build();
 
         producto2 = Producto.builder()
-                .id_producto(2L)
+                .idProducto(2L)
                 .nombre("Producto 2")
                 .descripcion("Descripción del producto 2")
                 .categoria("Categoría 2")
@@ -76,8 +77,8 @@ class ProductoServiceTest {
 
         assertNotNull(productos);
         assertEquals(2, productos.size());
-        assertEquals(producto1.getId_producto(), productos.get(0).getId_producto());
-        assertEquals(producto2.getId_producto(), productos.get(1).getId_producto());
+        assertEquals(producto1.getIdProducto(), productos.get(0).getIdProducto());
+        assertEquals(producto2.getIdProducto(), productos.get(1).getIdProducto());
     }
 
     @Test
@@ -97,7 +98,7 @@ class ProductoServiceTest {
         Optional<Producto> producto = productoService.getProductoById(1L);
 
         assertTrue(producto.isPresent());
-        assertEquals(producto1.getId_producto(), producto.get().getId_producto());
+        assertEquals(producto1.getIdProducto(), producto.get().getIdProducto());
     }
 
     @Test
@@ -116,49 +117,49 @@ class ProductoServiceTest {
         Producto createdProducto = productoService.createProducto(createRequest);
 
         assertNotNull(createdProducto);
-        assertEquals(producto1.getId_producto(), createdProducto.getId_producto());
+        assertEquals(producto1.getIdProducto(), createdProducto.getIdProducto());
         verify(productoRepository).save(any(Producto.class));
     }
 
     @Test
     void updateProductoShouldReturnUpdatedProducto() {
-        Producto updatedProducto = Producto.builder()
-                .nombre("Producto Actualizado")
-                .descripcion("Descripción actualizada")
-                .categoria("Categoría Actualizada")
-                .unidadMedida("Unidad Actualizada")
-                .costoBase(250.0)
-                .monedaOriginal("GBP")
-                .tipo("Tipo Actualizado")
-                .estado(false)
-                .build();
+        UpdateProductRequest updateRequest = new UpdateProductRequest(
+                "Producto Actualizado",
+                "Descripción actualizada",
+                "Categoría Actualizada",
+                "Unidad Actualizada",
+                250.0,
+                "GBP",
+                "Tipo Actualizado",
+                false
+        );
 
         when(productoRepository.findById(1L)).thenReturn(Optional.of(producto1));
         when(productoRepository.save(any(Producto.class))).thenReturn(producto1);
 
-        Producto result = productoService.updateProducto(1L, updatedProducto);
+        Producto result = productoService.updateProducto(1L, updateRequest);
 
         assertNotNull(result);
-        assertEquals(producto1.getId_producto(), result.getId_producto());
+        assertEquals(producto1.getIdProducto(), result.getIdProducto());
         verify(productoRepository).save(producto1);
     }
 
     @Test
     void updateProductoShouldThrowExceptionWhenProductoNotFound() {
-        Producto updatedProducto = Producto.builder()
-                .nombre("Producto Actualizado")
-                .descripcion("Descripción actualizada")
-                .categoria("Categoría Actualizada")
-                .unidadMedida("Unidad Actualizada")
-                .costoBase(250.0)
-                .monedaOriginal("GBP")
-                .tipo("Tipo Actualizado")
-                .estado(false)
-                .build();
+        UpdateProductRequest updateRequest = new UpdateProductRequest(
+                "Producto Actualizado",
+                "Descripción actualizada",
+                "Categoría Actualizada",
+                "Unidad Actualizada",
+                250.0,
+                "GBP",
+                "Tipo Actualizado",
+                false
+        );
 
         when(productoRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> productoService.updateProducto(1L, updatedProducto));
+        assertThrows(RuntimeException.class, () -> productoService.updateProducto(1L, updateRequest));
     }
 
     @Test

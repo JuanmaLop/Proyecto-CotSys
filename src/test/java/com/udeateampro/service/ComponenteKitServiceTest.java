@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.udeateampro.controller.dto.CreateComponenteKitRequest;
+import com.udeateampro.controller.dto.UpdateComponenteKitRequest;
 import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.repository.ComponenteKitRepository;
 
@@ -126,16 +127,16 @@ class ComponenteKitServiceTest {
 
     @Test
     void updateComponenteKitShouldReturnUpdatedComponenteKit() {
-        ComponenteKit updated = ComponenteKit.builder()
-                .cantidad(15)
-                .instrucciones("Updated Instructions")
-                .estado(false)
-                .build();
+        UpdateComponenteKitRequest updateRequest = new UpdateComponenteKitRequest(
+                15,
+                "Updated Instructions",
+                false
+        );
 
         when(componenteKitRepository.findById(1L)).thenReturn(Optional.of(componenteKit1));
         when(componenteKitRepository.save(any(ComponenteKit.class))).thenReturn(componenteKit1);
 
-        ComponenteKit result = componenteKitService.updateComponenteKit(1L, updated);
+        ComponenteKit result = componenteKitService.updateComponenteKit(1L, updateRequest);
 
         assertNotNull(result);
         assertEquals(componenteKit1.getId_componente_kit(), result.getId_componente_kit());
@@ -144,15 +145,15 @@ class ComponenteKitServiceTest {
 
     @Test
     void updateComponenteKitShouldThrowExceptionWhenNotFound() {
-        ComponenteKit updated = ComponenteKit.builder()
-                .cantidad(15)
-                .instrucciones("Updated Instructions")
-                .estado(false)
-                .build();
+        UpdateComponenteKitRequest updateRequest = new UpdateComponenteKitRequest(
+                15,
+                "Updated Instructions",
+                false
+        );
 
         when(componenteKitRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> componenteKitService.updateComponenteKit(1L, updated));
+        assertThrows(RuntimeException.class, () -> componenteKitService.updateComponenteKit(1L, updateRequest));
     }
 
     @Test

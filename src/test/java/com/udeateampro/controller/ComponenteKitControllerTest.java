@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import com.udeateampro.controller.dto.CreateComponenteKitRequest;
+import com.udeateampro.controller.dto.UpdateComponenteKitRequest;
 import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.service.ComponenteKitService;
 
@@ -117,14 +118,20 @@ class ComponenteKitControllerTest {
                 .estado(true)
                 .build();
 
-        when(componenteKitService.updateComponenteKit(anyLong(), any(ComponenteKit.class))).thenReturn(updatedComponenteKit);
+        UpdateComponenteKitRequest updateRequest = new UpdateComponenteKitRequest(
+                20,
+                "Instrucciones actualizadas",
+                true
+        );
 
-        ResponseEntity<ComponenteKit> response = componenteKitController.updateComponenteKit(1L, componenteKit1);
+        when(componenteKitService.updateComponenteKit(anyLong(), any(UpdateComponenteKitRequest.class))).thenReturn(updatedComponenteKit);
+
+        ResponseEntity<ComponenteKit> response = componenteKitController.updateComponenteKit(1L, updateRequest);
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updatedComponenteKit, response.getBody());
-        verify(componenteKitService).updateComponenteKit(1L, componenteKit1);
+        verify(componenteKitService).updateComponenteKit(1L, updateRequest);
     }
 
     @Test
@@ -144,17 +151,32 @@ class ComponenteKitControllerTest {
         when(componenteKitService.createComponenteKit(createRequest)).thenReturn(componenteKit1);
 
         componenteKitController.addComponenteKit(createRequest);
+UpdateComponenteKitRequest updateRequest = new UpdateComponenteKitRequest(
+                componenteKit1.getCantidad(),
+                componenteKit1.getInstrucciones(),
+                componenteKit1.getEstado()
+        );
 
-        verify(componenteKitService).createComponenteKit(createRequest);
+        when(componenteKitService.updateComponenteKit(1L, updateRequest)).thenReturn(componenteKit1);
+
+        componenteKitController.updateComponenteKit(1L, updateRequest);
+
+        verify(componenteKitService).updateComponenteKit(1L, updateRequest);
     }
 
     @Test
     void updateComponenteKitShouldCallServiceWithCorrectParameters() {
-        when(componenteKitService.updateComponenteKit(1L, componenteKit1)).thenReturn(componenteKit1);
+        UpdateComponenteKitRequest updateRequest = new UpdateComponenteKitRequest(
+                componenteKit1.getCantidad(),
+                componenteKit1.getInstrucciones(),
+                componenteKit1.getEstado()
+        );
 
-        componenteKitController.updateComponenteKit(1L, componenteKit1);
+        when(componenteKitService.updateComponenteKit(1L, updateRequest)).thenReturn(componenteKit1);
 
-        verify(componenteKitService).updateComponenteKit(1L, componenteKit1);
+        componenteKitController.updateComponenteKit(1L, updateRequest);
+
+        verify(componenteKitService).updateComponenteKit(1L, updateRequest);
     }
 
     @Test
