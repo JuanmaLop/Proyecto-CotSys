@@ -16,8 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/componente-kit")
 public class ComponenteKitController {
-
     private final ComponenteKitService componenteKitService;
+    
     @Autowired
     public ComponenteKitController(ComponenteKitService componenteKitService) {
         this.componenteKitService = componenteKitService;

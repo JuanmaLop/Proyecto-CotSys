@@ -38,7 +38,7 @@ class ComponenteKitControllerTest {
     private CreateComponenteKitRequest createRequest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         componenteKit1 = ComponenteKit.builder()
                 .id_componente_kit(1L)
                 .kitSolucion(1L)

@@ -39,7 +39,7 @@ class CotizacionControllerTest {
     private CreateCotizacionRequest createRequest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         cotizacion1 = new Cotizacion();
         cotizacion1.setId(1L);
         cotizacion1.setUsuario(1L);

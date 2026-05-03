@@ -33,7 +33,7 @@ class ClienteControllerTest {
     private CreateClienteRequest createRequest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         cliente1 = Cliente.builder()
                 .id_cliente(1L)
                 .nombre("Cliente Uno")

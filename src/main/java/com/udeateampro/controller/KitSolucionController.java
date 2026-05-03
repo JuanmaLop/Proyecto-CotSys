@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +23,14 @@ import com.udeateampro.service.KitSolucionService;
 
 @RestController
 @RequestMapping("/api/kits")
-@CrossOrigin(origins = "*")
 
 public class KitSolucionController {
+    private final KitSolucionService kitSolucionService;
 
     @Autowired
-    private KitSolucionService kitSolucionService;
+    public KitSolucionController(KitSolucionService kitSolucionService) {
+        this.kitSolucionService = kitSolucionService;
+    }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
     @PostMapping("/create-kit")
@@ -49,16 +50,16 @@ public class KitSolucionController {
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @PutMapping("/{id_kit}/update-kit")
-    public ResponseEntity<KitSolucionResponse> updateKit(@PathVariable Long id_kit, @RequestBody CreateKitSolucionRequest request) {
-        KitSolucion kit = kitSolucionService.updateKit(id_kit, request);
+    @PutMapping("/{idKit}/update-kit")
+    public ResponseEntity<KitSolucionResponse> updateKit(@PathVariable Long idKit, @RequestBody CreateKitSolucionRequest request) {
+        KitSolucion kit = kitSolucionService.updateKit(idKit, request);
         return ResponseEntity.ok(toResponse(kit));
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'LIDER_TECNICO')")
-    @DeleteMapping("/{id_kit}/delete-kit")
-    public ResponseEntity<Void> deleteKit(@PathVariable Long id_kit) {
-        kitSolucionService.deleteKit(id_kit);
+    @DeleteMapping("/{idKit}/delete-kit")
+    public ResponseEntity<Void> deleteKit(@PathVariable Long idKit) {
+        kitSolucionService.deleteKit(idKit);
         return ResponseEntity.noContent().build();
     }
     
