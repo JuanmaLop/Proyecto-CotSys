@@ -37,16 +37,16 @@ class KitSolucionServiceTest {
     private CreateKitSolucionRequest createKitRequest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         kitSolucion1 = KitSolucion.builder()
-                .id_kit(1L)
+                .idKit(1L)
                 .nombre("Kit Solucion 1")
                 .descripcion("Descripcion del Kit Solucion 1")
                 .estado(true)
                 .build();
 
         kitSolucion2 = KitSolucion.builder()
-                .id_kit(2L)
+                .idKit(2L)
                 .nombre("Kit Solucion 2")
                 .descripcion("Descripcion del Kit Solucion 2")
                 .estado(false)
@@ -67,7 +67,7 @@ class KitSolucionServiceTest {
         KitSolucion createdKit = kitSolucionService.createKit(createKitRequest);
 
         assertNotNull(createdKit);
-        assertEquals(kitSolucion1.getId_kit(), createdKit.getId_kit());    
+        assertEquals(kitSolucion1.getIdKit(), createdKit.getIdKit());    
         }
 
         @Test
@@ -96,8 +96,8 @@ class KitSolucionServiceTest {
 
             assertNotNull(kits);
             assertEquals(2, kits.size());
-            assertEquals(kitSolucion1.getId_kit(), kits.get(0).getId_kit());
-            assertEquals(kitSolucion2.getId_kit(), kits.get(1).getId_kit());
+            assertEquals(kitSolucion1.getIdKit(), kits.get(0).getIdKit());
+            assertEquals(kitSolucion2.getIdKit(), kits.get(1).getIdKit());
         }
 
         @Test
@@ -118,7 +118,7 @@ class KitSolucionServiceTest {
             KitSolucion updatedKit = kitSolucionService.updateKit(1L, createKitRequest);
 
             assertNotNull(updatedKit);
-            assertEquals(kitSolucion1.getId_kit(), updatedKit.getId_kit());
+            assertEquals(kitSolucion1.getIdKit(), updatedKit.getIdKit());
             assertEquals(createKitRequest.nombre(), updatedKit.getNombre());
             assertEquals(createKitRequest.descripcion(), updatedKit.getDescripcion());
             assertEquals(createKitRequest.estado(), updatedKit.getEstado());

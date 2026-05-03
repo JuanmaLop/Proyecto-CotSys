@@ -33,30 +33,7 @@ public class ClienteService {
 
     //crear cliente
     public Cliente createCliente(CreateClienteRequest request) {
-
-        if (request.nombre() == null || request.nombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("Nombre cannot be null or empty");
-        }
-
-        if (request.nit() == null || request.nit().trim().isEmpty()) {
-            throw new IllegalArgumentException("NIT cannot be null or empty");
-        }
-
-        if (request.direccion() == null || request.direccion().trim().isEmpty()) {
-            throw new IllegalArgumentException("Direccion cannot be null or empty");
-        }
-
-        if (request.tipoRegimen() == null || request.tipoRegimen().trim().isEmpty()) {
-            throw new IllegalArgumentException("Tipo de regimen cannot be null or empty");
-        }
-
-        if (request.municipio() == null || request.municipio().trim().isEmpty()) {
-            throw new IllegalArgumentException("Municipio cannot be null or empty");
-        }
-
-        if (request.autorrentenedor() == null) {
-            throw new IllegalArgumentException("Autorrentenedor cannot be null");
-        }
+        validateCreateClienteRequest(request);
 
         var cliente = Cliente.builder()
                 .nombre(request.nombre())
@@ -68,7 +45,28 @@ public class ClienteService {
                 .build();
 
         return clienteRepository.save(cliente);
-}
+    }
+
+    private void validateCreateClienteRequest(CreateClienteRequest request) {
+        validateRequiredString(request.nombre(), "Nombre");
+        validateRequiredString(request.nit(), "NIT");
+        validateRequiredString(request.direccion(), "Direccion");
+        validateRequiredString(request.tipoRegimen(), "Tipo de regimen");
+        validateRequiredString(request.municipio(), "Municipio");
+        validateNotNull(request.autorrentenedor(), "Autorrentenedor");
+    }
+
+    private void validateRequiredString(String value, String fieldName) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be null or empty");
+        }
+    }
+
+    private void validateNotNull(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " cannot be null");
+        }
+    }
 
     //Actualizar cliente
     public Cliente updateCliente(Long idCliente, UpdateClienteRequest request) {

@@ -33,7 +33,7 @@ public class KitSolucionService {
         kitSolucion = kitSolucionRepository.save(kitSolucion);
 
         // Crear componentes si existen
-        createComponentesForKit(kitSolucion.getId_kit(), request.componentes());
+        createComponentesForKit(kitSolucion.getIdKit(), request.componentes());
 
         return kitSolucion;
     }

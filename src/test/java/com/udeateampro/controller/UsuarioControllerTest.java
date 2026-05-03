@@ -33,7 +33,7 @@ class UsuarioControllerTest {
     private UpdateUserRequest updateRequest2;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         usuarioResponse1 = new UsuarioResponse(
                 1L,
                 "Juan Pérez",

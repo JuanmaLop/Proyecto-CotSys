@@ -39,51 +39,70 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain) throws ServletException, IOException  {
-        
-                // Saltar el filtro solo para rutas públicas específicas
-                final String path = request.getServletPath();
-                if (path.equals("/api/auth/login") || path.equals("/api/auth/refresh-token")) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+        final String path = request.getServletPath();
+        if (shouldSkipFilter(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-                final String authHeader = request.getHeader("Authorization");
-                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+        final String authHeader = request.getHeader("Authorization");
+        if (isInvalidAuthorizationHeader(authHeader)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-                final String jwtToken = authHeader.substring(7);
-                final String usuarioEmail = jwtService.extractEmail(jwtToken);
-                if (usuarioEmail == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+        final String jwtToken = authHeader.substring(7);
+        final String usuarioEmail = jwtService.extractEmail(jwtToken);
+        if (isAuthenticationAlreadySet(usuarioEmail)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-                final JwtToken token = tokenRepository.findByToken(jwtToken)
-                        .orElse(null);
-                if (token == null || token.isExpirado() || token.isRevocado()) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+        if (!authenticateToken(jwtToken, usuarioEmail)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-                final UserDetails userDetails = this.userDetailsService.loadUserByUsername(usuarioEmail);
-                final Optional<Usuario> usuario = usuarioRepository.findByEmail(userDetails.getUsername());
-                if (usuario.isEmpty()) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
-                final boolean isTokenValid = jwtService.isTokenValid(jwtToken, usuario.get());
-                if (!isTokenValid){
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
-                final var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-                
-                filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
-}   
+
+    private boolean shouldSkipFilter(String path) {
+        return path.equals("/api/auth/login") || path.equals("/api/auth/refresh-token");
+    }
+
+    private boolean isInvalidAuthorizationHeader(String authHeader) {
+        return authHeader == null || !authHeader.startsWith("Bearer ");
+    }
+
+    private boolean isAuthenticationAlreadySet(String usuarioEmail) {
+        return usuarioEmail == null || SecurityContextHolder.getContext().getAuthentication() != null;
+    }
+
+    private boolean authenticateToken(String jwtToken, String usuarioEmail) {
+        if (isTokenMissingOrInvalid(jwtToken)) {
+            return false;
+        }
+
+        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(usuarioEmail);
+        final Optional<Usuario> usuario = usuarioRepository.findByEmail(userDetails.getUsername());
+        if (usuario.isEmpty()) {
+            return false;
+        }
+
+        if (!jwtService.isTokenValid(jwtToken, usuario.get())) {
+            return false;
+        }
+
+        final var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        return true;
+    }
+
+    private boolean isTokenMissingOrInvalid(String jwtToken) {
+        return tokenRepository.findByToken(jwtToken)
+                .filter(token -> !token.isExpirado() && !token.isRevocado())
+                .isEmpty();
+    }
+}
+

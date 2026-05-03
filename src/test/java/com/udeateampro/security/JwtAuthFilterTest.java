@@ -62,7 +62,7 @@ class JwtAuthFilterTest {
     private JwtToken jwtToken;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         SecurityContextHolder.clearContext();
 
         usuario = Usuario.builder()

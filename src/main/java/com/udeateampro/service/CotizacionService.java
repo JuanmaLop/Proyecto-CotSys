@@ -28,31 +28,9 @@ public class CotizacionService {
 
     //crear producto
     public Cotizacion createCotizacion(CreateCotizacionRequest request) {
-
-        if (request.estado() == null || request.estado().trim().isEmpty()) {
-            throw new IllegalArgumentException("Estado cannot be null or empty");
-        }
-        if (request.fechaCreacion() == null) {
-            throw new IllegalArgumentException("Fecha de creación cannot be null");
-        }
-        if (request.fechaValidez() == null) {
-            throw new IllegalArgumentException("Fecha de validez cannot be null");
-        }
-        if (request.margenGeneral() == null) {
-            throw new IllegalArgumentException("Margen general cannot be null");
-        }
-        if (request.monedaCotizacion() == null || request.monedaCotizacion().trim().isEmpty()) {
-            throw new IllegalArgumentException("Moneda de cotización cannot be null or empty");
-        }
-        if (request.usuario() == null) {
-            throw new IllegalArgumentException("Usuario cannot be null");
-        }
-        if (request.cliente() == null) {
-            throw new IllegalArgumentException("Cliente cannot be null");
-        }
+        validateCreateCotizacionRequest(request);
 
         Cotizacion cotizacion = new Cotizacion();
-
         cotizacion.setEstado(request.estado());
         cotizacion.setFechaCreacion(request.fechaCreacion()); // típica lógica
         cotizacion.setFechaValidez(request.fechaValidez());
@@ -62,6 +40,28 @@ public class CotizacionService {
         cotizacion.setCliente(request.cliente());
 
         return cotizacionRepository.save(cotizacion);
+    }
+
+    private void validateCreateCotizacionRequest(CreateCotizacionRequest request) {
+        validateRequiredString(request.estado(), "Estado");
+        validateNotNull(request.fechaCreacion(), "Fecha de creación");
+        validateNotNull(request.fechaValidez(), "Fecha de validez");
+        validateNotNull(request.margenGeneral(), "Margen general");
+        validateRequiredString(request.monedaCotizacion(), "Moneda de cotización");
+        validateNotNull(request.usuario(), "Usuario");
+        validateNotNull(request.cliente(), "Cliente");
+    }
+
+    private void validateRequiredString(String value, String fieldName) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be null or empty");
+        }
+    }
+
+    private void validateNotNull(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " cannot be null");
+        }
     }
 
     public Cotizacion updateCotizacion(Long id, UpdateCotizacionRequest updatedCotizacion) {

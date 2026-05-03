@@ -32,7 +32,7 @@ class JwtServiceTest {
     private String expiredToken;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         usuario = Usuario.builder()
                 .id(1L)
                 .email("test@example.com")

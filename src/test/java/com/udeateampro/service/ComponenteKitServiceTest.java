@@ -35,7 +35,7 @@ class ComponenteKitServiceTest {
     @BeforeEach
     void setUp() {
         componenteKit1 = ComponenteKit.builder()
-                .id_componente_kit(1L)
+                .idComponenteKit(1L)
                 .kitSolucion(1L)
                 .producto(1L)
                 .cantidad(10)
@@ -44,7 +44,7 @@ class ComponenteKitServiceTest {
                 .build();
 
         componenteKit2 = ComponenteKit.builder()
-                .id_componente_kit(2L)
+                .idComponenteKit(2L)
                 .kitSolucion(2L)
                 .producto(2L)
                 .cantidad(20)
@@ -63,8 +63,8 @@ class ComponenteKitServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals(componenteKit1.getId_componente_kit(), result.get(0).getId_componente_kit());
-        assertEquals(componenteKit2.getId_componente_kit(), result.get(1).getId_componente_kit());
+        assertEquals(componenteKit1.getIdComponenteKit(), result.get(0).getIdComponenteKit());
+        assertEquals(componenteKit2.getIdComponenteKit(), result.get(1).getIdComponenteKit());
     }
     
     @Test
@@ -74,7 +74,7 @@ class ComponenteKitServiceTest {
         Optional<ComponenteKit> result = componenteKitService.getComponenteKitById(1L);
 
         assertTrue(result.isPresent());
-        assertEquals(componenteKit1.getId_componente_kit(), result.get().getId_componente_kit());
+        assertEquals(componenteKit1.getIdComponenteKit(), result.get().getIdComponenteKit());
     }
 
     @Test
@@ -93,7 +93,7 @@ class ComponenteKitServiceTest {
         ComponenteKit result = componenteKitService.createComponenteKit(createRequest);
 
         assertNotNull(result);
-        assertEquals(componenteKit1.getId_componente_kit(), result.getId_componente_kit());
+        assertEquals(componenteKit1.getIdComponenteKit(), result.getIdComponenteKit());
         verify(componenteKitRepository).save(any(ComponenteKit.class));
     }
 
@@ -139,7 +139,7 @@ class ComponenteKitServiceTest {
         ComponenteKit result = componenteKitService.updateComponenteKit(1L, updateRequest);
 
         assertNotNull(result);
-        assertEquals(componenteKit1.getId_componente_kit(), result.getId_componente_kit());
+        assertEquals(componenteKit1.getIdComponenteKit(), result.getIdComponenteKit());
         verify(componenteKitRepository).save(componenteKit1);
     }
 

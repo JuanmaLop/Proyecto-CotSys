@@ -34,7 +34,7 @@ class UsuarioServiceTest {
     private UpdateUserRequest updateRequest2;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         usuario1 = Usuario.builder()
                 .id(1L)
                 .nombre("Usuario Uno")

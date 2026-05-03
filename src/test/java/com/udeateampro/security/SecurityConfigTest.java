@@ -38,7 +38,7 @@ class SecurityConfigTest {
     private Usuario usuario;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         usuario = Usuario.builder()
                 .id(1L)
                 .email("test@example.com")

@@ -64,10 +64,10 @@ public class KitSolucionController {
     }
     
     private KitSolucionResponse toResponse(KitSolucion kit) {
-        List<ComponenteKit> componentes = kitSolucionService.getComponentesByKit(kit.getId_kit());
+        List<ComponenteKit> componentes = kitSolucionService.getComponentesByKit(kit.getIdKit());
         List<KitSolucionResponse.ComponenteKitResponse> componentesResponse = componentes.stream()
                 .map(c -> new KitSolucionResponse.ComponenteKitResponse(
-                        c.getId_componente_kit(),
+                        c.getIdComponenteKit(),
                         c.getProducto(),
                         c.getCantidad(),
                         c.getInstrucciones(),
@@ -75,7 +75,7 @@ public class KitSolucionController {
                 .collect(Collectors.toList());
         
         return new KitSolucionResponse(
-                kit.getId_kit(),
+                kit.getIdKit(),
                 kit.getNombre(),
                 kit.getDescripcion(),
                 kit.getEstado(),

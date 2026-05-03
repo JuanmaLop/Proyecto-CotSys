@@ -56,7 +56,7 @@ class AuthServiceTest {
     private CreateUserRequest createUserRequest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         usuario = Usuario.builder()
                 .id(1L)
                 .nombre("Test User")

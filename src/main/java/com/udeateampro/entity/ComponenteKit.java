@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 public class ComponenteKit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_componente_kit")
-    private Long id_componente_kit;
+    @Column(name = "idComponenteKit")
+    private Long idComponenteKit;
 
-    @Column(name = "id_kit_solucion", nullable = false)
+    @Column(name = "idKitSolucion", nullable = false)
     private Long kitSolucion;
 
-    @Column(name = "id_producto", nullable = false)
+    @Column(name = "idProducto", nullable = false)
     private Long producto;
 
     @Column(name = "cantidad", nullable = false)

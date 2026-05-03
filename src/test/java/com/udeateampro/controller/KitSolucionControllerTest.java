@@ -43,21 +43,21 @@ class KitSolucionControllerTest {
     @BeforeEach
     public void setUp() {
         kitSolucion1 = KitSolucion.builder()
-                .id_kit(1L)
+                .idKit(1L)
                 .nombre("Kit Básico")
                 .descripcion("Kit de solución básica para proyectos pequeños")
                 .estado(true)
                 .build();
 
         kitSolucion2 = KitSolucion.builder()
-                .id_kit(2L)
+                .idKit(2L)
                 .nombre("Kit Avanzado")
                 .descripcion("Kit de solución avanzada para proyectos complejos")
                 .estado(true)
                 .build();
 
         componenteKit1 = ComponenteKit.builder()
-                .id_componente_kit(1L)
+                .idComponenteKit(1L)
                 .kitSolucion(1L)
                 .producto(1L)
                 .cantidad(5)
@@ -66,7 +66,7 @@ class KitSolucionControllerTest {
                 .build();
 
         componenteKit2 = ComponenteKit.builder()
-                .id_componente_kit(2L)
+                .idComponenteKit(2L)
                 .kitSolucion(1L)
                 .producto(2L)
                 .cantidad(10)
@@ -142,7 +142,7 @@ class KitSolucionControllerTest {
     @Test
     void updateKitShouldReturnUpdatedKitResponse() {
         KitSolucion updatedKit = KitSolucion.builder()
-                .id_kit(1L)
+                .idKit(1L)
                 .nombre("Kit Básico Actualizado")
                 .descripcion("Descripción actualizada")
                 .estado(true)

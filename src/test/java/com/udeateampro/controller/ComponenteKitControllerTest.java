@@ -40,7 +40,7 @@ class ComponenteKitControllerTest {
     @BeforeEach
     void setUp() {
         componenteKit1 = ComponenteKit.builder()
-                .id_componente_kit(1L)
+                .idComponenteKit(1L)
                 .kitSolucion(1L)
                 .producto(1L)
                 .cantidad(5)
@@ -49,7 +49,7 @@ class ComponenteKitControllerTest {
                 .build();
 
         componenteKit2 = ComponenteKit.builder()
-                .id_componente_kit(2L)
+                .idComponenteKit(2L)
                 .kitSolucion(1L)
                 .producto(2L)
                 .cantidad(10)
@@ -110,7 +110,7 @@ class ComponenteKitControllerTest {
     @Test
     void updateComponenteKitShouldReturnUpdatedComponenteKit() {
         ComponenteKit updatedComponenteKit = ComponenteKit.builder()
-                .id_componente_kit(1L)
+                .idComponenteKit(1L)
                 .kitSolucion(1L)
                 .producto(1L)
                 .cantidad(20)

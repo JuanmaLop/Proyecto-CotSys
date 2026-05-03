@@ -31,7 +31,7 @@ class AuthControllerTest {
     private TokenResponse tokenResponse;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         loginRequest = new LoginRequest("user@example.com", "password123");
         createUserRequest = new CreateUserRequest("John Doe", "john@example.com", "VENDEDOR", "password123");
         tokenResponse = new TokenResponse("access-token-123", "refresh-token-456");
