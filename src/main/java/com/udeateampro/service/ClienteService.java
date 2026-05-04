@@ -1,6 +1,5 @@
 package com.udeateampro.service;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import com.udeateampro.controller.dto.CreateClienteRequest;
 import com.udeateampro.controller.dto.UpdateClienteRequest;
 import com.udeateampro.entity.Cliente;
 import com.udeateampro.repository.ClienteRepository;
+import com.udeateampro.service.validator.RequestValidator;
 
 @Service
 public class ClienteService {
@@ -48,47 +48,33 @@ public class ClienteService {
     }
 
     private void validateCreateClienteRequest(CreateClienteRequest request) {
-        validateRequiredString(request.nombre(), "Nombre");
-        validateRequiredString(request.nit(), "NIT");
-        validateRequiredString(request.direccion(), "Direccion");
-        validateRequiredString(request.tipoRegimen(), "Tipo de regimen");
-        validateRequiredString(request.municipio(), "Municipio");
-        validateNotNull(request.autorrentenedor(), "Autorrentenedor");
-    }
-
-    private void validateRequiredString(String value, String fieldName) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be null or empty");
-        }
-    }
-
-    private void validateNotNull(Object value, String fieldName) {
-        if (value == null) {
-            throw new IllegalArgumentException(fieldName + " cannot be null");
-        }
+        RequestValidator.validateRequiredString(request.nombre(), "Nombre");
+        RequestValidator.validateRequiredString(request.nit(), "NIT");
+        RequestValidator.validateRequiredString(request.direccion(), "Direccion");
+        RequestValidator.validateRequiredString(request.tipoRegimen(), "Tipo de regimen");
+        RequestValidator.validateRequiredString(request.municipio(), "Municipio");
+        RequestValidator.validateNotNull(request.autorrentenedor(), "Autorrentenedor");
     }
 
     //Actualizar cliente
     public Cliente updateCliente(Long idCliente, UpdateClienteRequest request) {
-        Optional<Cliente> existingCliente = clienteRepository.findById(idCliente);
+        Cliente cliente = clienteRepository.findById(idCliente)
+                .orElseThrow(() -> new IllegalArgumentException("No existe el cliente con id:" + idCliente));
+        
+        updateClienteFields(cliente, request);
+        return clienteRepository.save(cliente);
+    }
 
-        if(existingCliente.isPresent()) {
-            Cliente cliente = existingCliente.get();
-            cliente.setNombre(request.nombre());
-            cliente.setNit(request.nit());
-            cliente.setDireccion(request.direccion());
-            cliente.setTipoRegimen(request.tipoRegimen());
-            cliente.setMunicipio(request.municipio());
-            return clienteRepository.save(cliente);
-        }else{
-            throw new IllegalArgumentException("No existe el cliente con id:" + idCliente);
-        }
+    private void updateClienteFields(Cliente cliente, UpdateClienteRequest request) {
+        cliente.setNombre(request.nombre());
+        cliente.setNit(request.nit());
+        cliente.setDireccion(request.direccion());
+        cliente.setTipoRegimen(request.tipoRegimen());
+        cliente.setMunicipio(request.municipio());
     }
 
     public void deleteCliente(Long idCliente) {
-        if(!clienteRepository.existsById(idCliente)) {
-            throw new IllegalArgumentException("No existe el cliente con id:" + idCliente);
-        }
+        RequestValidator.validateExists(clienteRepository.existsById(idCliente), "cliente", idCliente);
         clienteRepository.deleteById(idCliente);
     }
 }

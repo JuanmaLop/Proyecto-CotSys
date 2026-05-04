@@ -10,6 +10,7 @@ import com.udeateampro.controller.dto.CreateComponenteKitRequest;
 import com.udeateampro.controller.dto.UpdateComponenteKitRequest;
 import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.repository.ComponenteKitRepository;
+import com.udeateampro.service.validator.RequestValidator;
 
 @Service
 public class ComponenteKitService {
@@ -42,22 +43,10 @@ public class ComponenteKitService {
     }
 
     private void validateCreateComponenteKitRequest(CreateComponenteKitRequest request) {
-        validateNotNull(request.kitsolucion(), "Kit de solucion");
-        validateNotNull(request.producto(), "Producto");
-        validateCantidad(request.cantidad());
-        validateNotNull(request.instrucciones(), "Instrucciones");
-    }
-
-    private void validateNotNull(Object value, String fieldName) {
-        if (value == null) {
-            throw new IllegalArgumentException(fieldName + " cannot be null");
-        }
-    }
-
-    private void validateCantidad(Integer cantidad) {
-        if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException("Cantidad must be greater than zero");
-        }
+        RequestValidator.validateNotNull(request.kitsolucion(), "Kit de solucion");
+        RequestValidator.validateNotNull(request.producto(), "Producto");
+        RequestValidator.validatePositiveInteger(request.cantidad(), "Cantidad");
+        RequestValidator.validateNotNull(request.instrucciones(), "Instrucciones");
     }
 
     public ComponenteKit updateComponenteKit(Long idComponenteKit, UpdateComponenteKitRequest request) {
@@ -72,9 +61,7 @@ public class ComponenteKitService {
     }
 
     public void deleteComponenteKit(Long idComponenteKit) {
-        if (!componenteKitRepository.existsById(idComponenteKit)) {
-            throw new IllegalArgumentException("No existe el componente kit con id: " + idComponenteKit);
-        }
+        RequestValidator.validateExists(componenteKitRepository.existsById(idComponenteKit), "componente kit", idComponenteKit);
         componenteKitRepository.deleteById(idComponenteKit);
     }
 }
