@@ -10,6 +10,7 @@ import com.udeateampro.controller.dto.CreateProductRequest;
 import com.udeateampro.controller.dto.UpdateProductRequest;
 import com.udeateampro.entity.Producto;
 import com.udeateampro.repository.ProductoRepository;
+import com.udeateampro.service.validator.RequestValidator;
 
 @Service
 public class ProductoService {
@@ -46,28 +47,26 @@ public class ProductoService {
 
     //Actualizar producto
     public Producto updateProducto(Long idProducto, UpdateProductRequest request) {
-        Optional<Producto> existingProducto = productoRepository.findById(idProducto);
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new IllegalArgumentException("No existe el producto con id:" + idProducto));
+        
+        updateProductoFields(producto, request);
+        return productoRepository.save(producto);
+    }
 
-        if(existingProducto.isPresent()) {
-            Producto producto = existingProducto.get();
-            producto.setNombre(request.nombre());
-            producto.setDescripcion(request.descripcion());
-            producto.setCategoria(request.categoria());
-            producto.setUnidadMedida(request.unidadMedida());
-            producto.setCostoBase(request.costoBase());
-            producto.setMonedaOriginal(request.monedaOriginal());
-            producto.setTipo(request.tipo());
-            producto.setEstado(request.estado());
-            return productoRepository.save(producto);
-        }else{
-            throw new IllegalArgumentException("No existe el producto con id:" + idProducto);
-        }
+    private void updateProductoFields(Producto producto, UpdateProductRequest request) {
+        producto.setNombre(request.nombre());
+        producto.setDescripcion(request.descripcion());
+        producto.setCategoria(request.categoria());
+        producto.setUnidadMedida(request.unidadMedida());
+        producto.setCostoBase(request.costoBase());
+        producto.setMonedaOriginal(request.monedaOriginal());
+        producto.setTipo(request.tipo());
+        producto.setEstado(request.estado());
     }
 
     public void deleteProducto(Long idProducto) {
-        if(!productoRepository.existsById(idProducto)) {
-            throw new IllegalArgumentException("No existe el producto con id:" + idProducto);
-        }
+        RequestValidator.validateExists(productoRepository.existsById(idProducto), "producto", idProducto);
         productoRepository.deleteById(idProducto);
     }
 }

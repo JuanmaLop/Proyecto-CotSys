@@ -1,6 +1,7 @@
 package com.udeateampro.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.udeateampro.entity.ComponenteKit;
 import com.udeateampro.entity.KitSolucion;
 import com.udeateampro.repository.ComponenteKitRepository;
 import com.udeateampro.repository.KitSolucionRepository;
+import com.udeateampro.service.validator.RequestValidator;
 
 @Service
 public class KitSolucionService {
@@ -52,11 +54,7 @@ public class KitSolucionService {
         KitSolucion existing = kitSolucionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("kit no encontrado"));
 
-        existing.setNombre(request.nombre());
-        existing.setDescripcion(request.descripcion());
-        if (request.estado() != null) {
-            existing.setEstado(request.estado());
-        }
+        updateKitFields(existing, request);
         existing = kitSolucionRepository.save(existing);
 
         // Eliminar componentes existentes y crear nuevos
@@ -64,6 +62,14 @@ public class KitSolucionService {
         createComponentesForKit(id, request.componentes());
 
         return existing;
+    }
+
+    private void updateKitFields(KitSolucion kit, CreateKitSolucionRequest request) {
+        kit.setNombre(request.nombre());
+        kit.setDescripcion(request.descripcion());
+        if (request.estado() != null) {
+            kit.setEstado(request.estado());
+        }
     }
 
     @Transactional
@@ -78,13 +84,10 @@ public class KitSolucionService {
         if (componentes == null || componentes.isEmpty()) {
             return;
         }
-
-        for (var compDTO : componentes) {
-            if (isValidComponente(compDTO)) {
-                var componente = buildComponenteFromDTO(kitId, compDTO);
-                componenteKitRepository.save(componente);
-            }
-        }
+        componentes.stream()
+                .filter(this::isValidComponente)
+                .map(compDTO -> buildComponenteFromDTO(kitId, compDTO))
+                .forEach(componenteKitRepository::save);
     }
 
     private boolean isValidComponente(CreateKitSolucionRequest.ComponenteKitDTO compDTO) {
@@ -96,13 +99,9 @@ public class KitSolucionService {
                 .kitSolucion(kitId)
                 .producto(compDTO.id_producto())
                 .cantidad(compDTO.cantidad())
-                .instrucciones(getDefaultIfNull(compDTO.instrucciones(), ""))
-                .estado(getDefaultIfNull(compDTO.estado(), Boolean.TRUE))
+                .instrucciones(Objects.requireNonNullElse(compDTO.instrucciones(), ""))
+                .estado(Objects.requireNonNullElse(compDTO.estado(), Boolean.TRUE))
                 .build();
-    }
-
-    private <T> T getDefaultIfNull(T value, T defaultValue) {
-        return value != null ? value : defaultValue;
     }
 
 }
