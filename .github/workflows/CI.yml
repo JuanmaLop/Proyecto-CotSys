@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - Reductor-de-complejidad
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
